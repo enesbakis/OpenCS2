@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div>
+
+{% if server.error %}
+<div class="flash-bar warning mb-3">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+  {{ _('Could not connect to RCON') }} — <strong>{{ server.error }}</strong>
+</div>
+{% endif %}
+
+<!-- Resource Metrics -->
+<div class="row g-3 mb-3">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="stat-icon purple"><i class="fa-solid fa-microchip"></i></div>
+      <div style="flex:1; min-width:0;">
+        <div class="d-flex justify-content-between align-items-baseline mb-1">
+          <div class="stat-label" style="margin:0;">CPU</div>
+          <span id="metricCpuVal" style="font-size:0.95rem; font-weight:700; color:#1e293b;">—</span>
+        </div>
+        <div class="metric-bar-wrap">
+          <div class="metric-bar metric-bar-cpu" id="metricCpuBar" style="width:0%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="stat-icon sky"><i class="fa-solid fa-memory"></i></div>
+      <div style="flex:1; min-width:0;">
+        <div class="d-flex justify-content-between align-items-baseline mb-1">
+          <div class="stat-label" style="margin:0;">RAM</div>
+          <span id="metricRamVal" style="font-size:0.95rem; font-weight:700; color:#1e293b;">—</span>
+        </div>
+        <div class="metric-bar-wrap">
+          <div class="metric-bar metric-bar-ram" id="metricRamBar" style="width:0%;"></div>
+        </div>
+        <div id="metricRamDetail" style="font-size:0.7rem; color:#94a3b8; margin-top:3px;"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="stat-icon amber"><i class="fa-solid fa-hard-drive"></i></div>
+      <div style="flex:1; min-width:0;">
+        <div class="d-flex justify-content-between align-items-baseline mb-1">
+          <div class="stat-label" style="margin:0;">Disk (CS2)</div>
+          <span id="metricDiskVal" style="font-size:0.95rem; font-weight:700; color:#1e293b;">—</span>
+        </div>
+        <div class="metric-bar-wrap">
+          <div class="metric-bar metric-bar-disk" id="metricDiskBar" style="width:0%;"></div>
+        </div>
+        <div id="metricDiskDetail" style="font-size:0.7rem; color:#94a3b8; margin-top:3px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sunucu Stat Cards -->
+<div class="row g-3 mb-3">
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon indigo"><i class="fa-solid fa-server"></i></div>
+      <div>
+        <div class="stat-label">{{ _('Server Name') }}</div>
+        <div class="stat-value sm" id="liveHostname">{{ server.hostname }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
+      <div>
+        <div class="stat-label">{{ _('Players') }}</div>
+        <div class="stat-value">
+          <span id="livePlayerCount">{{ server.player_count }}</span>
+          <span style="color:#94a3b8; font-size:0.9rem;">/<span id="liveMaxPlayers">{{ server.max_players }}</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon amber"><i class="fa-solid fa-map"></i></div>
+      <div>
+        <div class="stat-label">{{ _('Active Map') }}</div>
+        <div class="stat-value sm" id="liveMap">{{ server.map }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon sky"><i class="fa-solid fa-forward"></i></div>
+      <div>
+        <div class="stat-label">{{ _('Next Map') }}</div>
+        <div class="stat-value sm" id="liveNextMap">{{ server.next_map }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-lock"></i>{{ _('Server Password') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <form method="POST" action="{{ url_for('dashboard.set_password') }}" class="d-flex gap-2">
+          <input type="text" name="sv_password" class="form-control"
+                 value="{{ server.sv_password }}" placeholder="{{ _('Leave empty for no password') }}">
+          <button type="submit" class="btn-action apply" style="white-space:nowrap;">
+            <i class="fa-solid fa-check"></i> {{ _('Apply') }}
+          </button>
+        </form>
+        <div class="mt-2" style="font-size:0.75rem; color:#94a3b8;">
+          {{ _('Required for password-protected server. Leave empty for public.') }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-right-left"></i>{{ _('Quick Map Change') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <form method="POST" action="{{ url_for('dashboard.change_map') }}" class="d-flex gap-2">
+          <select name="map_name" class="form-select">
+            {% for m in maps %}
+              <option value="{{ m }}" {% if m == server.map %}selected{% endif %}>{{ m }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn-action apply" style="white-space:nowrap;">
+            <i class="fa-solid fa-play"></i> {{ _('Switch') }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Player Table -->
+<div class="card">
+  <div class="card-header-custom">
+    <h6 class="card-title"><i class="fa-solid fa-user-group"></i>{{ _('Active Players') }}</h6>
+    <span class="badge-neutral" id="liveBadge">{{ _('%(count)s players', count=server.player_count) }}</span>
+  </div>
+  <div class="card-body-custom p-0">
+    <div id="playerTableWrap">
+      {% if server.players %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>{{ _('Player Name') }}</th>
+            <th>Steam ID</th>
+            <th>Ping</th>
+            <th>{{ _('Actions') }}</th>
+          </tr>
+        </thead>
+        <tbody id="playerTbody">
+          {% for p in server.players %}
+          <tr>
+            <td><span class="badge-neutral">{{ p.userid }}</span></td>
+            <td><strong>{{ p.name }}</strong></td>
+            <td style="font-size:0.75rem; color:#94a3b8;">{{ p.steamid }}</td>
+            <td>
+              {% set ping = p.ping|int %}
+              {% if ping < 80 %}<span class="badge-ping-good">{{ ping }}ms</span>
+              {% elif ping < 150 %}<span class="badge-ping-med">{{ ping }}ms</span>
+              {% else %}<span class="badge-ping-bad">{{ ping }}ms</span>{% endif %}
+            </td>
+            <td>
+              <form method="POST" action="{{ url_for('dashboard.player_action') }}" class="d-inline">
+                <input type="hidden" name="userid" value="{{ p.userid }}">
+                <input type="hidden" name="playername" value="{{ p.name }}">
+                <button type="submit" name="action" value="kick" class="btn-action kick">
+                  <i class="fa-solid fa-shoe-prints"></i> Kick
+                </button>
+                <button type="button" class="btn-action ban"
+                        data-bs-toggle="modal" data-bs-target="#banModal"
+                        data-userid="{{ p.userid }}" data-name="{{ p.name }}">
+                  <i class="fa-solid fa-ban"></i> Ban
+                </button>
+                <button type="submit" name="action" value="slay" class="btn-action slay">
+                  <i class="fa-solid fa-skull"></i> Slay
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">
+        <i class="fa-solid fa-ghost"></i>
+        <p>{{ _('No players on the server') }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- RCON Terminal -->
+<div class="card mt-4">
+  <div class="card-header-custom">
+    <h6 class="card-title"><i class="fa-solid fa-terminal"></i>{{ _('RCON Console') }}</h6>
+    <span style="font-size:0.72rem; color:#94a3b8;">{{ _('Execute CS2 commands via RCON') }}</span>
+  </div>
+  <div class="card-body-custom p-0" style="display:flex; flex-direction:column;">
+    <div id="rconOutput" class="log-viewer" style="height:300px; max-height:300px; border-radius:0;"></div>
+    <div style="display:flex; gap:0.5rem; padding:0.6rem 0.75rem; border-top:1px solid #21262d; background:#161b22; border-radius:0 0 10px 10px;">
+      <span style="font-family:monospace; color:#6366f1; align-self:center; font-size:1rem; line-height:1;">›</span>
+      <input type="text" id="rconInput" class="form-control"
+             autocomplete="off" spellcheck="false"
+             style="font-family:'JetBrains Mono','Consolas',monospace; font-size:0.82rem; background:#0d1117; color:#c9d1d9; border:1px solid #30363d; border-radius:6px;"
+             placeholder="{{ _('Enter command... (e.g.: meta list, status, sm_plugins)') }}">
+      <button onclick="sendRcon()" class="btn-action apply" style="white-space:nowrap; border-radius:6px;">
+        <i class="fa-solid fa-paper-plane"></i> {{ _('Send') }}
+      </button>
+    </div>
+  </div>
+</div>
+</div><!-- /max-width wrapper -->
+
+<!-- Ban Modal -->
+<div class="modal fade" id="banModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:14px; border:1px solid #e2e8f0;">
+      <div class="modal-header" style="border-bottom:1px solid #f1f5f9;">
+        <h5 class="modal-title" style="font-size:0.9rem; font-weight:700;">
+          <i class="fa-solid fa-ban me-2" style="color:#ef4444;"></i>
+          {{ _('Apply Ban:') }} <span id="banModalName"></span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ url_for('dashboard.player_action') }}">
+        <div class="modal-body">
+          <input type="hidden" name="action" value="ban">
+          <input type="hidden" name="userid" id="banUserId">
+          <input type="hidden" name="playername" id="banPlayerName">
+          <label class="form-label-custom">{{ _('Ban Duration (minutes, 0 = permanent)') }}</label>
+          <input type="number" name="duration" class="form-control" value="60" min="0">
+        </div>
+        <div class="modal-footer" style="border-top:1px solid #f1f5f9;">
+          <button type="button" class="btn-action muted" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+          <button type="submit" class="btn-action ban">
+            <i class="fa-solid fa-ban"></i> {{ _('Apply Ban') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Ban Modal
+  const banModal = document.getElementById('banModal');
+  if (banModal) {
+    banModal.addEventListener('show.bs.modal', e => {
+      const btn = e.relatedTarget;
+      document.getElementById('banUserId').value     = btn.dataset.userid;
+      document.getElementById('banPlayerName').value = btn.dataset.name;
+      document.getElementById('banModalName').textContent = btn.dataset.name;
+    });
+  }
+
+  // ── Metric helpers ────────────────────────────────────────────────────────
+  function setBar(barEl, valEl, pct, text) {
+    barEl.style.width = Math.min(pct, 100) + '%';
+    barEl.className = barEl.className.replace(/metric-bar-ok|metric-bar-warn|metric-bar-crit/g, '').trim();
+    if (pct < 60)       barEl.classList.add('metric-bar-ok');
+    else if (pct < 85)  barEl.classList.add('metric-bar-warn');
+    else                barEl.classList.add('metric-bar-crit');
+    if (valEl) valEl.textContent = text;
+  }
+
+  function pollMetrics() {
+    fetch('{{ url_for("dashboard.api_metrics") }}')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (!d) return;
+        setBar(document.getElementById('metricCpuBar'),  document.getElementById('metricCpuVal'),  d.cpu_percent,  d.cpu_percent + '%');
+        setBar(document.getElementById('metricRamBar'),  document.getElementById('metricRamVal'),  d.ram_percent,  d.ram_percent + '%');
+        const rd = document.getElementById('metricRamDetail');
+        if (rd) rd.textContent = d.ram_used_mb + ' MB / ' + d.ram_total_mb + ' MB';
+        setBar(document.getElementById('metricDiskBar'), document.getElementById('metricDiskVal'), d.disk_percent, d.disk_percent + '%');
+        const dd = document.getElementById('metricDiskDetail');
+        if (dd) dd.textContent = d.disk_used_gb + ' GB / ' + d.disk_total_gb + ' GB';
+
+        // Restart otomatik tespit: log dosyası toggle'dan sonra oluşturulduysa sunucu yeniden başlatılmış
+        if (d.log_mtime && d.log_mtime > 0) {
+          const restartTs = parseInt(localStorage.getItem('cs2RestartNeeded') || '0');
+          if (restartTs > 0 && d.log_mtime > restartTs) {
+            dismissRestart();
+          }
+        }
+      })
+      .catch(() => {});
+  }
+
+  // ── RCON Terminal ─────────────────────────────────────────────────────────
+  const rconOutput  = document.getElementById('rconOutput');
+  const rconInput   = document.getElementById('rconInput');
+  const rconHistory = [];
+  let   rconHistIdx = -1;
+
+  function appendLine(text, cls) {
+    if (!rconOutput) return;
+    const d = document.createElement('div');
+    if (cls) d.className = cls;
+    d.textContent = text;
+    rconOutput.appendChild(d);
+    rconOutput.scrollTop = rconOutput.scrollHeight;
+  }
+
+  function sendRcon() {
+    const cmd = rconInput ? rconInput.value.trim() : '';
+    if (!cmd) return;
+    appendLine('› ' + cmd, 'rcon-cmd');
+    rconHistory.unshift(cmd);
+    rconHistIdx = -1;
+    rconInput.value = '';
+    rconInput.disabled = true;
+    fetch('{{ url_for("dashboard.api_rcon") }}', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({cmd: cmd})
+    })
+      .then(r => r.json())
+      .then(d => {
+        if (d.error) {
+          appendLine('{{ _("Error:") }} ' + d.error, 'rcon-error');
+        } else {
+          (d.output || '').split('\n').forEach(l => { if (l.trim()) appendLine(l, ''); });
+        }
+      })
+      .catch(e => appendLine('{{ _("Request error:") }} ' + e, 'rcon-error'))
+      .finally(() => { if (rconInput) { rconInput.disabled = false; rconInput.focus(); } });
+  }
+
+  if (rconInput) {
+    rconInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { sendRcon(); return; }
+      if (e.key === 'ArrowUp') {
+        if (rconHistIdx < rconHistory.length - 1) rconHistIdx++;
+        rconInput.value = rconHistory[rconHistIdx] || '';
+        e.preventDefault();
+      }
+      if (e.key === 'ArrowDown') {
+        rconHistIdx > 0 ? rconHistIdx-- : (rconHistIdx = -1);
+        rconInput.value = rconHistIdx >= 0 ? rconHistory[rconHistIdx] : '';
+        e.preventDefault();
+      }
+    });
+  }
+
+  appendLine('{{ _("RCON Console ready. Enter command...") }}', 'rcon-info');
+
+  // Initial load + intervals
+  pollMetrics();
+  setInterval(pollMetrics, 5000);
+</script>
+{% endblock %}

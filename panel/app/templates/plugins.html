@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Plugin Management') }}{% endblock %}
+{% block page_title %}{{ _('Plugin Management') }}{% endblock %}
+
+{% block content %}
+
+{% if not metamod_installed %}
+<div class="flash-bar warning mb-3">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+  {{ _('Metamod not installed. Plugins will not work.') }}
+  <a href="{{ url_for('metamod.index') }}" class="ms-2" style="color:inherit; font-weight:600;">{{ _('Go to Metamod page') }} →</a>
+</div>
+{% endif %}
+
+<div class="row g-3">
+
+  <!-- Eklenti Listesi -->
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-puzzle-piece"></i>{{ _('Installed Plugins') }}</h6>
+        <span class="badge-neutral">{{ plugins|length }}</span>
+      </div>
+      <div class="card-body-custom">
+
+        {% if plugins %}
+        <div class="d-flex flex-column gap-2" id="pluginList">
+          {% for p in plugins %}
+          <div class="plugin-row {% if not p.enabled %}plugin-disabled{% endif %}" id="plugin-{{ p.name }}">
+            <div class="plugin-icon {% if not p.enabled %}plugin-icon-disabled{% endif %}">
+              <i class="fa-solid fa-puzzle-piece"></i>
+            </div>
+            <div class="plugin-info">
+              <div class="d-flex align-items-center gap-2">
+                <span class="plugin-name">{{ p.name }}</span>
+                {% if p.enabled %}
+                <span class="badge-status active">{{ _('Active') }}</span>
+                {% else %}
+                <span class="badge-status inactive">{{ _('Inactive') }}</span>
+                {% endif %}
+              </div>
+              <div class="plugin-meta">
+                {{ p.file_count }} dosya &nbsp;·&nbsp; {{ p.size_kb }} KB
+                {% if p.config_files %}
+                  &nbsp;·&nbsp; <span style="color:#6366f1;">{{ p.config_files|length }} config</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="plugin-actions">
+              {% if p.readme_file %}
+              <button type="button" class="btn-action blue readme-btn" title="{{ _('Description') }}"
+                      data-plugin="{{ p.name }}">
+                <i class="fa-solid fa-book-open"></i>
+              </button>
+              {% endif %}
+
+              {% if p.config_files %}
+              <a href="{{ url_for('plugins.edit', plugin_name=p.name) }}"
+                 class="btn-action apply" title="{{ _('Edit') }}">
+                <i class="fa-solid fa-pen"></i> {{ _('Edit') }}
+              </a>
+              {% else %}
+              <span class="btn-action muted" title="{{ _('No config file') }}" style="cursor:default;">
+                <i class="fa-solid fa-pen"></i> {{ _('No Config') }}
+              </span>
+              {% endif %}
+
+              <!-- Toggle Aktif/Deaktif -->
+              <form method="POST" action="{{ url_for('plugins.toggle', plugin_name=p.name) }}">
+                {% if p.enabled %}
+                <button type="submit" class="btn-action warning" title="{{ _('Disable') }}">
+                  <i class="fa-solid fa-toggle-on"></i>
+                </button>
+                {% else %}
+                <button type="submit" class="btn-action green" title="{{ _('Enable') }}">
+                  <i class="fa-solid fa-toggle-off"></i>
+                </button>
+                {% endif %}
+              </form>
+
+              {% set confirm_del = _('Delete %(p)s? This action cannot be undone.', p=p.name) %}
+              <form method="POST" action="{{ url_for('plugins.delete', plugin_name=p.name) }}"
+                    onsubmit="return confirm('{{ confirm_del }}')">
+                <button type="submit" class="btn-action ban" title="Sil">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <i class="fa-solid fa-puzzle-piece"></i>
+          <p>{{ _('No plugins installed yet') }}</p>
+          <p style="font-size:0.78rem; color:#94a3b8;">{{ _('Upload a plugin via zip/tar.gz from the right panel') }}</p>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Yükleme Paneli -->
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-upload"></i>{{ _('Upload Plugin') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <form method="POST" action="{{ url_for('plugins.upload') }}" enctype="multipart/form-data">
+
+          <label class="form-label-custom">{{ _('Plugin Name') }} <span style="color:#94a3b8; font-weight:400;">({{ _('optional') }})</span></label>
+          <input type="text" name="plugin_name" class="form-control mb-3"
+                 placeholder="{{ _('e.g.: myawesomeplugin') }}"
+                 style="font-size:0.85rem;"
+                 pattern="[a-zA-Z0-9_\-]+"
+                 title="{{ _('Only letters, numbers, _ and - allowed') }}">
+
+          <label class="form-label-custom">{{ _('Select File') }}</label>
+          <input type="file" name="plugin_file" class="form-control mb-1"
+                 accept=".zip,.tar.gz,.so,.vdf" required>
+          <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:0.75rem;">
+            .zip, .tar.gz, .so, .vdf — maks 256 MB
+          </div>
+
+          <button type="submit" class="btn-action apply w-100" style="justify-content:center; padding:0.55rem;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> {{ _('Upload') }}
+          </button>
+        </form>
+
+        <hr style="border-color:#e2e8f0; margin:1rem 0;">
+
+        <div style="font-size:0.78rem; color:#64748b;">
+          <div style="font-weight:600; margin-bottom:0.4rem; color:#1e293b;">{{ _('Plugin Directory') }}</div>
+          <code style="font-size:0.73rem; word-break:break-all;">game/csgo/addons/&lt;plugin-name&gt;/</code>
+          <div class="mt-2" style="line-height:1.7;">
+            {{ _('Restart CS2 after installation:') }}<br>
+            <code style="font-size:0.73rem;">docker compose restart cs2</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Markdown modal -->
+<div class="modal fade" id="readmeModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1e293b; color:#e2e8f0; border:1px solid #334155;">
+      <div class="modal-header" style="border-bottom:1px solid #334155;">
+        <h5 class="modal-title" id="readmeModalTitle" style="font-size:0.95rem; font-weight:600;"><i class="fa-solid fa-book-open me-2"></i>{{ _('Description') }}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:1.25rem;">
+        <div id="readmeContent" style="font-size:0.875rem; line-height:1.7;">{{ _('Loading...') }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+// Toggle formlarına submit öncesi localStorage flag'i set et
+document.querySelectorAll('form[action*="/toggle/"]').forEach(form => {
+  form.addEventListener('submit', () => {
+    localStorage.setItem('cs2RestartNeeded', Date.now().toString());
+  });
+});
+
+document.querySelectorAll('.readme-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var plugin = this.dataset.plugin;
+    document.getElementById('readmeModalTitle').innerHTML = '<i class="fa-solid fa-book-open me-2"></i>' + plugin + ' — {{ _("Description") }}';
+    document.getElementById('readmeContent').innerHTML = '{{ _("Loading...") }}';
+    var modal = new bootstrap.Modal(document.getElementById('readmeModal'));
+    modal.show();
+    fetch('/plugins/readme/' + encodeURIComponent(plugin))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.content) {
+          document.getElementById('readmeContent').innerHTML = marked.parse(data.content);
+        } else {
+          document.getElementById('readmeContent').innerHTML = '<span style="color:#f87171;">{{ _("Could not load description:") }} ' + (data.error || '{{ _("unknown error") }}') + '</span>';
+        }
+      })
+      .catch(function() {
+        document.getElementById('readmeContent').innerHTML = '<span style="color:#f87171;">{{ _("Could not load description.") }}</span>';
+      });
+  });
+});
+</script>
+
+<style>
+#readmeContent h1, #readmeContent h2, #readmeContent h3 { color:#f8fafc; margin-top:1rem; }
+#readmeContent table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+#readmeContent th { background:#0f172a; color:#94a3b8; padding:0.4rem 0.6rem; text-align:left; border:1px solid #334155; }
+#readmeContent td { padding:0.4rem 0.6rem; border:1px solid #334155; }
+#readmeContent tr:nth-child(even) td { background:#1a2744; }
+#readmeContent code { background:#0f172a; color:#a5f3fc; padding:0.1rem 0.3rem; border-radius:3px; font-size:0.8rem; }
+#readmeContent hr { border-color:#334155; }
+#readmeContent blockquote { border-left:3px solid #6366f1; padding-left:0.75rem; color:#94a3b8; margin:0.5rem 0; }
+</style>
+{% endblock %}

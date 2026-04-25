@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Map Management') }}{% endblock %}
+{% block page_title %}{{ _('Map Management') }}{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+
+  <!-- Map List -->
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-list"></i>{{ _('Maps') }}</h6>
+        <span class="badge-neutral" id="mapCount">{{ _('%(n)s maps', n=maps|length) }}</span>
+      </div>
+      <div class="card-body-custom">
+
+        <!-- Arama + Filtre -->
+        <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+          <div style="position:relative; flex:1; min-width:180px;">
+            <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:0.65rem; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:0.8rem;"></i>
+            <input type="text" id="mapSearch" placeholder="{{ _('Search maps...') }}" class="form-control"
+                   style="padding-left:2rem; height:34px; font-size:0.85rem;">
+          </div>
+          <div class="d-flex flex-wrap gap-1" id="prefixFilters">
+            <button class="btn-filter active" data-prefix="">{{ _('All') }}</button>
+            <button class="btn-filter" data-prefix="de_">de_</button>
+            <button class="btn-filter" data-prefix="cs_">cs_</button>
+            <button class="btn-filter" data-prefix="ar_">ar_</button>
+            <button class="btn-filter" data-prefix="fy_">fy_</button>
+            <button class="btn-filter" data-prefix="aim_">aim_</button>
+            <button class="btn-filter" data-prefix="workshop_">Workshop</button>
+          </div>
+        </div>
+
+        <!-- Tablo -->
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="mapTable">
+            <thead>
+              <tr>
+                <th style="width:40%">{{ _('Map Name') }}</th>
+                <th style="width:20%">{{ _('Mapcycle') }}</th>
+                <th style="width:20%">{{ _('Quick Menu') }}</th>
+                <th style="width:20%">{{ _('Action') }}</th>
+              </tr>
+            </thead>
+            <tbody id="mapTbody">
+              {% set default_maps = ['ar_baggage','ar_shoots','cs_italy','cs_office',
+                                     'de_ancient','de_anubis','de_cache','de_cbble',
+                                     'de_dust2','de_inferno','de_mirage','de_nuke',
+                                     'de_overpass','de_train','de_vertigo'] %}
+              {% for m in maps %}
+              <tr data-map="{{ m }}">
+                <td>
+                  {% if '_' in m %}
+                    <span style="font-size:0.7rem; color:#6366f1; font-weight:600; text-transform:uppercase; letter-spacing:.03em;">{{ m.split('_')[0] }}_</span><strong>{{ m[m.index('_')+1:] }}</strong>
+                  {% else %}
+                    <strong>{{ m }}</strong>
+                  {% endif %}
+                </td>
+                <td>
+                  <form method="POST" action="{{ url_for('maps.toggle_mapcycle') }}">
+                    <input type="hidden" name="map_name" value="{{ m }}">
+                    {% if m in mapcycle %}
+                      <button type="submit" class="btn-action green">
+                        <i class="fa-solid fa-circle-check"></i> {{ _('Active') }}
+                      </button>
+                    {% else %}
+                      <button type="submit" class="btn-action muted">
+                        <i class="fa-regular fa-circle"></i> {{ _('Add') }}
+                      </button>
+                    {% endif %}
+                  </form>
+                </td>
+                <td>
+                  <form method="POST" action="{{ url_for('maps.toggle_quickmap') }}">
+                    <input type="hidden" name="map_name" value="{{ m }}">
+                    {% if m in quick_maps %}
+                      <button type="submit" class="btn-action apply" style="padding:0.25rem 0.6rem; font-size:0.75rem;">
+                        <i class="fa-solid fa-bolt"></i> {{ _('Active') }}
+                      </button>
+                    {% else %}
+                      <button type="submit" class="btn-action muted" style="padding:0.25rem 0.6rem; font-size:0.75rem;">
+                        <i class="fa-regular fa-bolt"></i> {{ _('Add') }}
+                      </button>
+                    {% endif %}
+                  </form>
+                </td>
+                <td>
+                  {% if m not in default_maps %}
+                  {% set confirm_msg = _('Delete %(m)s?', m=m) %}
+                  <form method="POST" action="{{ url_for('maps.delete_map', map_name=m) }}"
+                        onsubmit="return confirm('{{ confirm_msg }}')">
+                    <button type="submit" class="btn-action ban">
+                      <i class="fa-solid fa-trash"></i> {{ _('Delete') }}
+                    </button>
+                  </form>
+                  {% else %}
+                  <span style="font-size:0.75rem; color:#94a3b8;">{{ _('Default') }}</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty state -->
+        <div id="mapEmpty" class="empty-state" style="display:none;">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <p>{{ _('No results found') }}</p>
+        </div>
+
+        <!-- Sayfalama -->
+        <div class="d-flex justify-content-between align-items-center mt-3" id="paginationBar">
+          <span style="font-size:0.8rem; color:#64748b;" id="pageInfo"></span>
+          <div class="d-flex gap-1 align-items-center" id="pageButtons"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Sağ Kolon: Upload + Mapcycle -->
+  <div class="col-lg-4 d-flex flex-column gap-3">
+
+    <!-- Upload -->
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-upload"></i>{{ _('Upload Map') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <form method="POST" action="{{ url_for('maps.upload') }}" enctype="multipart/form-data">
+          <label class="form-label-custom">{{ _('Select File') }}</label>
+          <input type="file" name="map_file" class="form-control mb-3" accept=".bsp,.vpk,.zip" required>
+          <button type="submit" class="btn-action apply w-100" style="justify-content:center; padding:0.5rem;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> {{ _('Upload') }}
+          </button>
+        </form>
+        <div class="mt-2" style="font-size:0.73rem; color:#94a3b8;">
+          {{ _('.bsp, .vpk or .zip accepted. All .bsp/.vpk files inside ZIP will be extracted. Max 512 MB.') }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Mapcycle -->
+    <div class="card flex-grow-1">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-rotate"></i>Mapcycle</h6>
+        <span class="badge-neutral">{{ mapcycle|length }}</span>
+      </div>
+      <div class="card-body-custom" style="max-height:420px; overflow-y:auto;">
+        {% if mapcycle %}
+          {% for m in mapcycle %}
+          <div class="map-row">
+            <span class="map-active-dot"></span>
+            <span class="map-name">{{ m }}</span>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state" style="padding:1.5rem;">
+            <i class="fa-solid fa-rotate"></i>
+            <p>{{ _('Mapcycle is empty. Add maps from the left table.') }}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function () {
+  const PER_PAGE = 15;
+  let currentPage = 1;
+  let activePrefix = '';
+  let searchTerm = '';
+
+  const tbody    = document.getElementById('mapTbody');
+  const allRows  = Array.from(tbody.querySelectorAll('tr'));
+  const empty    = document.getElementById('mapEmpty');
+  const mapTable = document.getElementById('mapTable');
+  const countEl  = document.getElementById('mapCount');
+  const pageInfo = document.getElementById('pageInfo');
+  const pageBtns = document.getElementById('pageButtons');
+
+  function getFiltered() {
+    return allRows.filter(function (row) {
+      const name = row.dataset.map || '';
+      const matchPrefix = !activePrefix || name.startsWith(activePrefix);
+      const matchSearch = !searchTerm || name.includes(searchTerm);
+      return matchPrefix && matchSearch;
+    });
+  }
+
+  function render() {
+    const filtered   = getFiltered();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const start = (currentPage - 1) * PER_PAGE;
+    const end   = start + PER_PAGE;
+
+    allRows.forEach(function (r) { r.style.display = 'none'; });
+    filtered.slice(start, end).forEach(function (r) { r.style.display = ''; });
+
+    empty.style.display    = filtered.length === 0 ? '' : 'none';
+    mapTable.style.display = filtered.length === 0 ? 'none' : '';
+    countEl.textContent    = filtered.length + ' harita';
+
+    if (filtered.length > 0) {
+      pageInfo.textContent = (start + 1) + '–' + Math.min(end, filtered.length) + ' / ' + filtered.length;
+    } else {
+      pageInfo.textContent = '';
+    }
+
+    pageBtns.innerHTML = '';
+    if (totalPages <= 1) return;
+
+    function makeBtn(label, page, disabled, active) {
+      const btn = document.createElement('button');
+      btn.textContent = label;
+      btn.className   = 'btn-filter' + (active ? ' active' : '');
+      btn.disabled    = disabled;
+      btn.style.minWidth = '32px';
+      if (!disabled && !active) {
+        btn.addEventListener('click', function () { currentPage = page; render(); });
+      }
+      return btn;
+    }
+
+    function makeDots() {
+      const s = document.createElement('span');
+      s.textContent = '…';
+      s.style.cssText = 'padding:0 4px; color:#94a3b8; font-size:0.8rem; line-height:32px;';
+      return s;
+    }
+
+    pageBtns.appendChild(makeBtn('‹', currentPage - 1, currentPage === 1, false));
+
+    const wStart = Math.max(1, currentPage - 2);
+    const wEnd   = Math.min(totalPages, currentPage + 2);
+
+    if (wStart > 1) {
+      pageBtns.appendChild(makeBtn('1', 1, false, false));
+      if (wStart > 2) pageBtns.appendChild(makeDots());
+    }
+    for (let i = wStart; i <= wEnd; i++) {
+      pageBtns.appendChild(makeBtn(i, i, false, i === currentPage));
+    }
+    if (wEnd < totalPages) {
+      if (wEnd < totalPages - 1) pageBtns.appendChild(makeDots());
+      pageBtns.appendChild(makeBtn(totalPages, totalPages, false, false));
+    }
+
+    pageBtns.appendChild(makeBtn('›', currentPage + 1, currentPage === totalPages, false));
+  }
+
+  document.getElementById('mapSearch').addEventListener('input', function () {
+    searchTerm = this.value.toLowerCase().trim();
+    currentPage = 1;
+    render();
+  });
+
+  document.getElementById('prefixFilters').addEventListener('click', function (e) {
+    const btn = e.target.closest('.btn-filter');
+    if (!btn) return;
+    document.querySelectorAll('#prefixFilters .btn-filter').forEach(function (b) {
+      b.classList.remove('active');
+    });
+    btn.classList.add('active');
+    activePrefix = btn.dataset.prefix;
+    currentPage  = 1;
+    render();
+  });
+
+  render();
+})();
+</script>
+{% endblock %}

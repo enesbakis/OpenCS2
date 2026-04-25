@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Edit Admin') }} — {{ admin_name }}{% endblock %}
+{% block page_title %}{{ _('Edit Admin') }}{% endblock %}
+
+{% block content %}
+<div class="row g-3 justify-content-center">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-user-pen"></i>{{ admin_name }}</h6>
+        <a href="{{ url_for('csadmins.index') }}" class="btn-action muted" style="font-size:0.78rem; padding:0.25rem 0.6rem;">
+          <i class="fa-solid fa-arrow-left"></i> {{ _('Back') }}
+        </a>
+      </div>
+      <div class="card-body-custom">
+        <form method="POST">
+
+          <label class="form-label-custom">{{ _('Display Name') }}</label>
+          <input type="text" name="name" class="form-control mb-3" required
+                 maxlength="64" value="{{ admin_name }}"
+                 style="font-size:0.85rem;">
+
+          <label class="form-label-custom">Steam ID</label>
+          <input type="text" name="identity" class="form-control mb-1" required
+                 value="{{ admin.identity }}"
+                 pattern="\d{17}|STEAM_[0-5]:[01]:\d+"
+                 style="font-size:0.85rem;">
+          <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:0.75rem;">
+            {{ _('Steam64 (17 digits) or STEAM_X:X:X') }}
+          </div>
+
+          <label class="form-label-custom">Immunity <span style="color:#94a3b8; font-weight:400;">(0–255)</span></label>
+          <input type="number" name="immunity" class="form-control mb-3"
+                 value="{{ admin.immunity or 0 }}" min="0" max="255"
+                 style="font-size:0.85rem;">
+
+          <label class="form-label-custom">{{ _('Permissions') }}</label>
+          <div class="d-flex flex-column gap-1 mb-3" style="max-height:260px; overflow-y:auto; padding:0.5rem; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+            {% for flag, label in css_flags %}
+            <label class="d-flex align-items-center gap-2" style="font-size:0.82rem; cursor:pointer;">
+              <input type="checkbox" name="flags" value="{{ flag }}"
+                     {% if flag in (admin.flags or []) %}checked{% endif %}
+                     {% if flag == '@css/root' %}onclick="handleRootCheck(this)"{% endif %}>
+              <span>{{ label }}</span>
+              <code style="font-size:0.68rem; color:#6366f1; margin-left:auto;">{{ flag.split('/')[-1] }}</code>
+            </label>
+            {% endfor %}
+          </div>
+
+          {% if groups %}
+          <label class="form-label-custom">{{ _('Groups') }} <span style="color:#94a3b8; font-weight:400;">({{ _('optional') }})</span></label>
+          <div class="d-flex flex-column gap-1 mb-3" style="padding:0.5rem; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+            {% for gname in groups.keys() %}
+            <label class="d-flex align-items-center gap-2" style="font-size:0.82rem; cursor:pointer;">
+              <input type="checkbox" name="groups" value="{{ gname }}"
+                     {% if gname in (admin.groups or []) %}checked{% endif %}>
+              <span>{{ gname }}</span>
+            </label>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="d-flex gap-2 mt-1">
+            <button type="submit" class="btn-action apply flex-fill" style="justify-content:center; padding:0.55rem;">
+              <i class="fa-solid fa-floppy-disk"></i> {{ _('Save') }}
+            </button>
+            <a href="{{ url_for('csadmins.index') }}" class="btn-action muted flex-fill" style="justify-content:center; padding:0.55rem; text-decoration:none;">
+              {{ _('Cancel') }}
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function handleRootCheck(checkbox) {
+  const form = checkbox.closest('form');
+  form.querySelectorAll('input[name="flags"]').forEach(cb => {
+    cb.checked = checkbox.checked;
+  });
+}
+</script>
+{% endblock %}

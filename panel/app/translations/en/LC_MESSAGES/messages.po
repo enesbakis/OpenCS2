@@ -1,0 +1,1118 @@
+# English translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-25 18:27+0300\n"
+"PO-Revision-Date: 2026-04-25 18:28+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: app/auth.py:19 app/users.py:33
+msgid "Username and password are required."
+msgstr ""
+
+#: app/auth.py:28
+msgid "Invalid username or password."
+msgstr ""
+
+#: app/auth.py:37
+msgid "Logged out."
+msgstr ""
+
+#: app/csadmins.py:124
+msgid "Invalid name (max 64 characters)."
+msgstr ""
+
+#: app/csadmins.py:128
+msgid "Invalid Steam ID. Use Steam64 (17 digits) or STEAM_X:X:X format."
+msgstr ""
+
+#: app/csadmins.py:136
+msgid "Immunity must be a number between 0 and 255."
+msgstr ""
+
+#: app/csadmins.py:158
+#, python-format
+msgid "Admin \"%(n)s\" added."
+msgstr ""
+
+#: app/csadmins.py:169 app/csadmins.py:236
+msgid "Admin not found."
+msgstr ""
+
+#: app/csadmins.py:180
+msgid "Invalid name."
+msgstr ""
+
+#: app/csadmins.py:184
+msgid "Invalid Steam ID."
+msgstr ""
+
+#: app/csadmins.py:192 app/csadmins.py:266
+msgid "Immunity must be between 0 and 255."
+msgstr ""
+
+#: app/csadmins.py:198
+#, python-format
+msgid "This Steam ID is already registered as \"%(n)s\"."
+msgstr ""
+
+#: app/csadmins.py:216
+#, python-format
+msgid "\"%(n)s\" updated."
+msgstr ""
+
+#: app/csadmins.py:242 app/plugins.py:438
+#, python-format
+msgid "\"%(n)s\" deleted."
+msgstr ""
+
+#: app/csadmins.py:258
+msgid "Group name is too long."
+msgstr ""
+
+#: app/csadmins.py:271
+#, python-format
+msgid "Group \"%(n)s\" already exists."
+msgstr ""
+
+#: app/csadmins.py:283
+#, python-format
+msgid "Group \"%(n)s\" created."
+msgstr ""
+
+#: app/csadmins.py:292
+msgid "Group not found."
+msgstr ""
+
+#: app/csadmins.py:298
+#, python-format
+msgid "Group \"%(n)s\" deleted."
+msgstr ""
+
+#: app/dashboard.py:158
+msgid "Invalid character in password."
+msgstr ""
+
+#: app/dashboard.py:164
+msgid "Server password updated."
+msgstr ""
+
+#: app/dashboard.py:164
+msgid "Server password removed."
+msgstr ""
+
+#: app/dashboard.py:166 app/dashboard.py:183
+#, python-format
+msgid "Error: %(e)s"
+msgstr ""
+
+#: app/dashboard.py:175 app/maps.py:183 app/maps.py:218 app/maps.py:240
+msgid "Invalid map name."
+msgstr ""
+
+#: app/dashboard.py:181
+#, python-format
+msgid "Map changed → %(m)s"
+msgstr ""
+
+#: app/dashboard.py:196
+msgid "Invalid player ID."
+msgstr ""
+
+#: app/dashboard.py:204
+msgid "Player kicked."
+msgstr ""
+
+#: app/dashboard.py:208
+#, python-format
+msgid "Player banned for %(d)s minutes."
+msgstr ""
+
+#: app/dashboard.py:211
+msgid "Player slayed."
+msgstr ""
+
+#: app/dashboard.py:213
+msgid "Unknown action."
+msgstr ""
+
+#: app/dashboard.py:215 app/server.py:101 app/server.py:155
+#, python-format
+msgid "RCON error: %(e)s"
+msgstr ""
+
+#: app/maps.py:122 app/plugins.py:307
+msgid "No file selected."
+msgstr ""
+
+#: app/maps.py:130
+msgid "Only .bsp, .vpk or .zip files are accepted."
+msgstr ""
+
+#: app/maps.py:141
+msgid "Invalid ZIP file."
+msgstr ""
+
+#: app/maps.py:162
+#, python-format
+msgid "Extracted from ZIP: %(files)s"
+msgstr ""
+
+#: app/maps.py:164
+msgid "No .bsp or .vpk found in ZIP."
+msgstr ""
+
+#: app/maps.py:170
+msgid "Security error: invalid file path."
+msgstr ""
+
+#: app/maps.py:175
+#, python-format
+msgid "Map %(f)s uploaded."
+msgstr ""
+
+#: app/maps.py:193 app/plugins.py:354 app/plugins.py:398
+msgid "Security error."
+msgstr ""
+
+#: app/maps.py:206
+#, python-format
+msgid "%(m)s deleted."
+msgstr ""
+
+#: app/maps.py:208
+msgid "Map file not found (.bsp/.vpk)."
+msgstr ""
+
+#: app/maps.py:224
+#, python-format
+msgid "%(m)s removed from mapcycle."
+msgstr ""
+
+#: app/maps.py:227
+#, python-format
+msgid "%(m)s added to mapcycle."
+msgstr ""
+
+#: app/maps.py:247
+#, python-format
+msgid "%(m)s removed from quick menu."
+msgstr ""
+
+#: app/maps.py:250
+#, python-format
+msgid "%(m)s added to quick menu."
+msgstr ""
+
+#: app/metamod.py:183
+#, python-format
+msgid "Installation failed: %(msg)s"
+msgstr ""
+
+#: app/metamod.py:186
+#, python-format
+msgid "Metamod installed → %(msg)s"
+msgstr ""
+
+#: app/metamod.py:192
+#, python-format
+msgid "gameinfo.gi: %(msg)s"
+msgstr ""
+
+#: app/plugins.py:314
+msgid "Unsupported file type. (.zip, .tar.gz, .so, .vdf)"
+msgstr ""
+
+#: app/plugins.py:324
+msgid "Invalid plugin name. (use letters, numbers, _ and -)"
+msgstr ""
+
+#: app/plugins.py:328
+msgid "This name is reserved by the system."
+msgstr ""
+
+#: app/plugins.py:342
+#, python-format
+msgid "Archive extraction error: %(e)s"
+msgstr ""
+
+#: app/plugins.py:359
+#, python-format
+msgid "Plugin \"%(n)s\" uploaded."
+msgstr ""
+
+#: app/plugins.py:363
+#, python-format
+msgid "Upload error: %(e)s"
+msgstr ""
+
+#: app/plugins.py:375 app/plugins.py:417 app/plugins.py:451
+msgid "Invalid plugin name."
+msgstr ""
+
+#: app/plugins.py:379
+msgid "System plugin cannot be modified."
+msgstr ""
+
+#: app/plugins.py:384 app/plugins.py:426 app/plugins.py:456
+msgid "Plugin not found."
+msgstr ""
+
+#: app/plugins.py:392
+#, python-format
+msgid "\"%(n)s\" disabled."
+msgstr ""
+
+#: app/plugins.py:395
+#, python-format
+msgid "\"%(n)s\" enabled."
+msgstr ""
+
+#: app/plugins.py:408
+#, python-format
+msgid "Status change error: %(e)s"
+msgstr ""
+
+#: app/plugins.py:421
+msgid "System plugin cannot be deleted."
+msgstr ""
+
+#: app/plugins.py:433
+msgid "Security error: invalid path."
+msgstr ""
+
+#: app/plugins.py:442
+#, python-format
+msgid "Delete error: %(e)s"
+msgstr ""
+
+#: app/plugins.py:470
+msgid "Invalid file path."
+msgstr ""
+
+#: app/plugins.py:478
+#, python-format
+msgid "Could not read file: %(e)s"
+msgstr ""
+
+#: app/server.py:92
+msgid "Invalid server name (1-128 characters)."
+msgstr ""
+
+#: app/server.py:99
+#, python-format
+msgid "Server name → %(name)s"
+msgstr ""
+
+#: app/server.py:110
+msgid "Invalid value. Enter a number between 1 and 64."
+msgstr ""
+
+#: app/server.py:115
+#, python-format
+msgid "Maximum player count saved as %(n)s."
+msgstr ""
+
+#: app/server.py:131
+msgid "server.cfg saved and loaded."
+msgstr ""
+
+#: app/server.py:135
+msgid "server.cfg saved — could not exec via RCON."
+msgstr ""
+
+#: app/server.py:144
+msgid "Invalid game mode."
+msgstr ""
+
+#: app/server.py:153
+#, python-format
+msgid "Game mode → %(m)s"
+msgstr ""
+
+#: app/server.py:183
+msgid "Invalid log file."
+msgstr ""
+
+#: app/users.py:36
+msgid "Username may only contain letters, numbers, _ and - (max 32 chars)."
+msgstr ""
+
+#: app/users.py:39
+msgid "Passwords do not match."
+msgstr ""
+
+#: app/users.py:42
+msgid "Password must be at least 6 characters."
+msgstr ""
+
+#: app/users.py:45
+msgid "This username is already taken."
+msgstr ""
+
+#: app/users.py:51
+#, python-format
+msgid "User \"%(u)s\" created."
+msgstr ""
+
+#: app/users.py:59
+msgid "You cannot delete your own account."
+msgstr ""
+
+#: app/users.py:64
+msgid "User deleted."
+msgstr ""
+
+#: app/users.py:73
+msgid "New password must be at least 6 characters."
+msgstr ""
+
+#: app/users.py:78
+msgid "Password updated."
+msgstr ""
+
+#: app/templates/audit.html:8
+msgid "Action History"
+msgstr ""
+
+#: app/templates/audit.html:9
+#, python-format
+msgid "Last %(n)s records"
+msgstr ""
+
+#: app/templates/audit.html:17
+msgid "Time"
+msgstr ""
+
+#: app/templates/audit.html:18
+msgid "User"
+msgstr ""
+
+#: app/templates/audit.html:19
+msgid "Action"
+msgstr ""
+
+#: app/templates/audit.html:20
+msgid "Detail"
+msgstr ""
+
+#: app/templates/audit.html:47
+msgid "No action records yet"
+msgstr ""
+
+#: app/templates/base.html:31
+msgid "General"
+msgstr ""
+
+#: app/templates/base.html:37 app/templates/base.html:102
+msgid "Server"
+msgstr ""
+
+#: app/templates/base.html:40
+msgid "Map Management"
+msgstr ""
+
+#: app/templates/base.html:52
+msgid "Plugins"
+msgstr ""
+
+#: app/templates/base.html:56 app/templates/server_settings.html:2
+#: app/templates/server_settings.html:3
+msgid "Server Settings"
+msgstr ""
+
+#: app/templates/base.html:60 app/templates/logs.html:2
+msgid "Logs"
+msgstr ""
+
+#: app/templates/base.html:63
+msgid "Management"
+msgstr ""
+
+#: app/templates/base.html:66
+msgid "CS Admin Management"
+msgstr ""
+
+#: app/templates/base.html:70 app/templates/users.html:3
+msgid "Panel Users"
+msgstr ""
+
+#: app/templates/base.html:83
+msgid "Logout"
+msgstr ""
+
+#: app/templates/base.html:114
+msgid "Theme"
+msgstr ""
+
+#: app/templates/base.html:125
+msgid "Plugin change detected —"
+msgstr ""
+
+#: app/templates/base.html:125
+msgid "Server restart required"
+msgstr ""
+
+#: app/templates/base.html:129 app/templates/base.html:208
+#: app/templates/base.html:214
+msgid "Restart"
+msgstr ""
+
+#: app/templates/base.html:132
+msgid "Done, restarted"
+msgstr ""
+
+#: app/templates/base.html:200
+msgid "Sending..."
+msgstr ""
+
+#: app/templates/base.html:205
+msgid "Sent"
+msgstr ""
+
+#: app/templates/base.html:210
+msgid "RCON Error:"
+msgstr ""
+
+#: app/templates/base.html:210
+msgid "Unknown error"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:12
+msgid "CounterStrikeSharp Status"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:31
+msgid "Metamod installed — ready for CounterStrikeSharp"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:33
+msgid "Metamod not installed. You must install Metamod first."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:40
+msgid "Install Metamod"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:43
+msgid "READY"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:57 app/templates/metamod.html:29
+msgid "Installation Status"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:61
+msgid "CounterStrikeSharp installed"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:64
+msgid "CounterStrikeSharp not installed"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:70 app/templates/metamod.html:42
+msgid "INSTALLED"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:72 app/templates/metamod.html:44
+msgid "NOT INSTALLED"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:84
+msgid "GitHub Latest Version"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:86 app/templates/metamod.html:97
+msgid "Checking..."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:98 app/templates/metamod.html:110
+msgid "Notes"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:102
+msgid "CounterStrikeSharp (CSS) requires"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:102
+msgid "— install it first."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:103
+msgid "Installation uses the"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:103
+msgid "package, no separate .NET runtime needed."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:104
+msgid "Files are extracted to"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:104
+#: app/templates/counterstrikesharp.html:106
+msgid "."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:105 app/templates/metamod.html:114
+msgid "Restart CS2 container after installation:"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:106
+msgid "CSS plugins go under"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:107
+msgid "Reinstalling over an existing installation is supported (for updates)."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:117 app/templates/metamod.html:128
+msgid "Installation"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:125
+#: app/templates/counterstrikesharp.html:141
+msgid "Reinstall / Update"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:125
+#: app/templates/counterstrikesharp.html:141 app/templates/metamod.html:136
+#: app/templates/metamod.html:153
+msgid "Download & Install"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:128
+msgid "Your browser downloads from GitHub, the panel installs."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:128
+msgid "package is selected."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:132 app/templates/metamod.html:144
+msgid "Preparing..."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:139
+msgid "Install Metamod first"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:148 app/templates/metamod.html:160
+msgid "Manual Upload"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:152
+msgid "download"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:153
+msgid "and upload it here."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:159
+#: app/templates/counterstrikesharp.html:294
+#: app/templates/counterstrikesharp.html:299 app/templates/metamod.html:170
+#: app/templates/metamod.html:316 app/templates/metamod.html:321
+msgid "Upload & Install"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:167 app/templates/metamod.html:191
+msgid "Installation Directory"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:171
+msgid "CSS plugins"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:179
+msgid "Documentation"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:203
+msgid "Fetching latest GitHub release URL..."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:210 app/templates/metamod.html:231
+msgid "Could not get URL"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:214 app/templates/metamod.html:235
+msgid "Could not get URL:"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:218
+msgid "Downloading via browser... (this may take a while)"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:239 app/templates/metamod.html:261
+msgid "Downloading..."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:244
+msgid "Download failed:"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:245 app/templates/metamod.html:267
+msgid "Try the manual upload method."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:250 app/templates/metamod.html:272
+msgid "Sending to panel..."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:260
+msgid "CounterStrikeSharp installed!"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:261 app/templates/metamod.html:283
+msgid "Remember to restart CS2."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:264
+#: app/templates/counterstrikesharp.html:292 app/templates/metamod.html:286
+#: app/templates/metamod.html:314
+msgid "Installation failed"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:267 app/templates/metamod.html:289
+msgid "Error sending to server:"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:279 app/templates/metamod.html:301
+msgid "Installing..."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:288 app/templates/metamod.html:310
+msgid "Installed!"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:289 app/templates/metamod.html:311
+msgid "Restart CS2."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:297 app/templates/dashboard.html:340
+#: app/templates/metamod.html:319
+msgid "Error:"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:318 app/templates/metamod.html:340
+msgid "Retry"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:334
+msgid "Could not fetch"
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:337 app/templates/metamod.html:358
+msgid "Connection error"
+msgstr ""
+
+#: app/templates/csadmin_edit.html:2 app/templates/csadmin_edit.html:3
+msgid "Edit Admin"
+msgstr ""
+
+#: app/templates/csadmin_edit.html:12
+msgid "Back"
+msgstr ""
+
+#: app/templates/csadmin_edit.html:18
+msgid "Display Name"
+msgstr ""
+
+#: app/templates/csadmin_edit.html:29
+msgid "Steam64 (17 digits) or STEAM_X:X:X"
+msgstr ""
+
+#: app/templates/csadmin_edit.html:37
+msgid "Permissions"
+msgstr ""
+
+#: app/templates/csadmin_edit.html:51
+msgid "Groups"
+msgstr ""
+
+#: app/templates/csadmin_edit.html:51
+msgid "optional"
+msgstr ""
+
+#: app/templates/csadmin_edit.html:65 app/templates/server_settings.html:21
+#: app/templates/server_settings.html:41 app/templates/server_settings.html:83
+msgid "Save"
+msgstr ""
+
+#: app/templates/csadmin_edit.html:68 app/templates/dashboard.html:250
+#: app/templates/users.html:120
+msgid "Cancel"
+msgstr ""
+
+#: app/templates/dashboard.html:11
+msgid "Could not connect to RCON"
+msgstr ""
+
+#: app/templates/dashboard.html:69 app/templates/server_settings.html:34
+msgid "Server Name"
+msgstr ""
+
+#: app/templates/dashboard.html:78
+msgid "Players"
+msgstr ""
+
+#: app/templates/dashboard.html:90
+msgid "Active Map"
+msgstr ""
+
+#: app/templates/dashboard.html:99
+msgid "Next Map"
+msgstr ""
+
+#: app/templates/dashboard.html:109
+msgid "Server Password"
+msgstr ""
+
+#: app/templates/dashboard.html:114
+msgid "Leave empty for no password"
+msgstr ""
+
+#: app/templates/dashboard.html:116 app/templates/server_settings.html:68
+msgid "Apply"
+msgstr ""
+
+#: app/templates/dashboard.html:120
+msgid "Required for password-protected server. Leave empty for public."
+msgstr ""
+
+#: app/templates/dashboard.html:128
+msgid "Quick Map Change"
+msgstr ""
+
+#: app/templates/dashboard.html:138
+msgid "Switch"
+msgstr ""
+
+#: app/templates/dashboard.html:149
+msgid "Active Players"
+msgstr ""
+
+#: app/templates/dashboard.html:150
+#, python-format
+msgid "%(count)s players"
+msgstr ""
+
+#: app/templates/dashboard.html:159
+msgid "Player Name"
+msgstr ""
+
+#: app/templates/dashboard.html:162 app/templates/users.html:22
+msgid "Actions"
+msgstr ""
+
+#: app/templates/dashboard.html:201
+msgid "No players on the server"
+msgstr ""
+
+#: app/templates/dashboard.html:211
+msgid "RCON Console"
+msgstr ""
+
+#: app/templates/dashboard.html:212
+msgid "Execute CS2 commands via RCON"
+msgstr ""
+
+#: app/templates/dashboard.html:221
+msgid "Enter command... (e.g.: meta list, status, sm_plugins)"
+msgstr ""
+
+#: app/templates/dashboard.html:223
+msgid "Send"
+msgstr ""
+
+#: app/templates/dashboard.html:237
+msgid "Apply Ban:"
+msgstr ""
+
+#: app/templates/dashboard.html:246
+msgid "Ban Duration (minutes, 0 = permanent)"
+msgstr ""
+
+#: app/templates/dashboard.html:252
+msgid "Apply Ban"
+msgstr ""
+
+#: app/templates/dashboard.html:345
+msgid "Request error:"
+msgstr ""
+
+#: app/templates/dashboard.html:365
+msgid "RCON Console ready. Enter command..."
+msgstr ""
+
+#: app/templates/login.html:6
+msgid "Login"
+msgstr ""
+
+#: app/templates/login.html:17
+msgid "Sign in to server management panel"
+msgstr ""
+
+#: app/templates/login.html:33 app/templates/users.html:20
+#: app/templates/users.html:77
+msgid "Username"
+msgstr ""
+
+#: app/templates/login.html:38 app/templates/users.html:78
+msgid "username"
+msgstr ""
+
+#: app/templates/login.html:43 app/templates/users.html:47
+#: app/templates/users.html:85
+msgid "Password"
+msgstr ""
+
+#: app/templates/login.html:57
+msgid "Sign In"
+msgstr ""
+
+#: app/templates/logs.html:3
+msgid "Server Logs"
+msgstr ""
+
+#: app/templates/logs.html:8
+msgid "Log File"
+msgstr ""
+
+#: app/templates/logs.html:18
+msgid "Last 300 lines"
+msgstr ""
+
+#: app/templates/logs.html:27
+msgid "Log file is empty or not found"
+msgstr ""
+
+#: app/templates/metamod.html:2 app/templates/metamod.html:3
+msgid "Metamod Management"
+msgstr ""
+
+#: app/templates/metamod.html:12
+msgid "Metamod:Source Status"
+msgstr ""
+
+#: app/templates/metamod.html:33
+msgid "Metamod:Source installed"
+msgstr ""
+
+#: app/templates/metamod.html:36
+msgid "Metamod:Source not installed"
+msgstr ""
+
+#: app/templates/metamod.html:62
+msgid "Configured to load Metamod"
+msgstr ""
+
+#: app/templates/metamod.html:64
+msgid "gameinfo.gi not found — make sure the CS2 container is running"
+msgstr ""
+
+#: app/templates/metamod.html:66
+msgid "Metamod entry missing, CS2 will not load Metamod"
+msgstr ""
+
+#: app/templates/metamod.html:73
+msgid "PATCHED"
+msgstr ""
+
+#: app/templates/metamod.html:75
+msgid "NOT PATCHED"
+msgstr ""
+
+#: app/templates/metamod.html:79
+msgid "Patch"
+msgstr ""
+
+#: app/templates/metamod.html:95
+msgid "Latest Version"
+msgstr ""
+
+#: app/templates/metamod.html:115
+msgid "Metamod is installed to"
+msgstr ""
+
+#: app/templates/metamod.html:115
+msgid " directory."
+msgstr ""
+
+#: app/templates/metamod.html:116
+msgid "patch is required for CS2 to load Metamod on startup."
+msgstr ""
+
+#: app/templates/metamod.html:117
+msgid "The original"
+msgstr ""
+
+#: app/templates/metamod.html:117
+msgid "is backed up as"
+msgstr ""
+
+#: app/templates/metamod.html:117
+msgid "before patching."
+msgstr ""
+
+#: app/templates/metamod.html:118
+msgid "Reinstalling over an existing installation is supported."
+msgstr ""
+
+#: app/templates/metamod.html:136 app/templates/metamod.html:153
+msgid "Reinstall"
+msgstr ""
+
+#: app/templates/metamod.html:139
+msgid ""
+"Your browser downloads from AlliedMods, the panel installs. gameinfo.gi "
+"is automatically patched."
+msgstr ""
+
+#: app/templates/metamod.html:164
+msgid "Download"
+msgstr ""
+
+#: app/templates/metamod.html:164
+msgid "the"
+msgstr ""
+
+#: app/templates/metamod.html:164
+msgid "file and upload it here."
+msgstr ""
+
+#: app/templates/metamod.html:182
+msgid "Patch gameinfo.gi"
+msgstr ""
+
+#: app/templates/metamod.html:200
+msgid "Build list"
+msgstr ""
+
+#: app/templates/metamod.html:224
+msgid "Fetching latest version URL..."
+msgstr ""
+
+#: app/templates/metamod.html:239
+msgid "Downloading via browser..."
+msgstr ""
+
+#: app/templates/metamod.html:266
+msgid "Download failed (CORS or network error):"
+msgstr ""
+
+#: app/templates/metamod.html:282
+msgid "Metamod installed!"
+msgstr ""
+
+#: app/templates/metamod.html:354
+msgid "Could not fetch version info"
+msgstr ""
+
+#: app/templates/server_settings.html:38
+msgid "e.g. My CS2 Server"
+msgstr ""
+
+#: app/templates/server_settings.html:45
+msgid "Applied instantly via RCON."
+msgstr ""
+
+#: app/templates/server_settings.html:52
+msgid "Game Mode"
+msgstr ""
+
+#: app/templates/server_settings.html:76
+msgid "Max Players"
+msgstr ""
+
+#: app/templates/server_settings.html:87
+msgid "Maximum player count shown on Dashboard"
+msgstr ""
+
+#: app/templates/server_settings.html:94
+msgid "Log Viewer"
+msgstr ""
+
+#: app/templates/server_settings.html:98
+msgid "Follow server logs in real time."
+msgstr ""
+
+#: app/templates/server_settings.html:101
+msgid "Go to Logs"
+msgstr ""
+
+#: app/templates/server_settings.html:108
+msgid "Connection Info"
+msgstr ""
+
+#: app/templates/server_settings.html:113
+msgid "Copy"
+msgstr ""
+
+#: app/templates/users.html:2
+msgid "Users"
+msgstr ""
+
+#: app/templates/users.html:12
+msgid "User List"
+msgstr ""
+
+#: app/templates/users.html:13
+msgid "user(s)"
+msgstr ""
+
+#: app/templates/users.html:21
+msgid "Created"
+msgstr ""
+
+#: app/templates/users.html:36
+msgid "You"
+msgstr ""
+
+#: app/templates/users.html:52
+#, python-format
+msgid "Delete %(name)s?"
+msgstr ""
+
+#: app/templates/users.html:72
+msgid "New User"
+msgstr ""
+
+#: app/templates/users.html:81
+msgid "Letters, numbers, _ and - allowed"
+msgstr ""
+
+#: app/templates/users.html:89
+msgid "At least 6 characters"
+msgstr ""
+
+#: app/templates/users.html:93
+msgid "Create User"
+msgstr ""
+
+#: app/templates/users.html:109
+msgid "Change Password:"
+msgstr ""
+
+#: app/templates/users.html:115
+msgid "New Password"
+msgstr ""
+
+#: app/templates/users.html:122
+msgid "Change"
+msgstr ""
+

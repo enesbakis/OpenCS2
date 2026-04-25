@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Server Settings') }}{% endblock %}
+{% block page_title %}{{ _('Server Settings') }}{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+
+  <!-- server.cfg -->
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-file-code"></i>server.cfg</h6>
+        <span style="font-size:0.72rem; color:#94a3b8;">{{ cfg_path }}</span>
+      </div>
+      <div class="card-body-custom">
+        <form method="POST" action="{{ url_for('server.save_cfg') }}">
+          <textarea name="cfg_content" class="form-control" rows="22"
+                    style="resize:vertical;" spellcheck="false">{{ cfg_content }}</textarea>
+          <div class="mt-3 d-flex justify-content-end">
+            <button type="submit" class="btn-action apply">
+              <i class="fa-solid fa-floppy-disk"></i> {{ _('Save') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Mode + Logs link -->
+  <div class="col-lg-4 d-flex flex-column gap-3">
+
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-signature"></i>{{ _('Server Name') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <form method="POST" action="{{ url_for('server.set_hostname') }}" class="d-flex gap-2">
+          <input type="text" name="hostname" value="{{ hostname }}" placeholder="{{ _('e.g. My CS2 Server') }}"
+                 class="form-control" maxlength="128">
+          <button type="submit" class="btn-action apply" style="white-space:nowrap;">
+            <i class="fa-solid fa-check"></i> {{ _('Save') }}
+          </button>
+        </form>
+        <small style="color:#94a3b8; font-size:0.75rem; margin-top:0.4rem; display:block;">
+          {{ _('Applied instantly via RCON.') }}
+        </small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-gamepad"></i>{{ _('Game Mode') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <form method="POST" action="{{ url_for('server.set_gamemode') }}" class="d-flex flex-column gap-2">
+          {% for key, val in game_modes.items() %}
+          <label class="d-flex align-items-center gap-2 p-2 rounded-3"
+                 style="cursor:pointer; border:1px solid {% if current_mode == key %}#6366f1{% else %}#e2e8f0{% endif %}; background:{% if current_mode == key %}rgba(99,102,241,0.07){% else %}transparent{% endif %};">
+            <input type="radio" name="mode_key" value="{{ key }}"
+                   {% if current_mode == key %}checked{% endif %}
+                   style="accent-color:#6366f1;">
+            <span style="font-size:0.83rem; font-weight:{% if current_mode == key %}600{% else %}500{% endif %}; color:{% if current_mode == key %}#4338ca{% else %}#334155{% endif %};">
+              {{ val.label }}
+            </span>
+          </label>
+          {% endfor %}
+          <button type="submit" class="btn-action apply mt-1" style="justify-content:center;">
+            <i class="fa-solid fa-check"></i> {{ _('Apply') }}
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-users"></i>{{ _('Max Players') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <form method="POST" action="{{ url_for('server.set_max_players') }}" class="d-flex align-items-center gap-2">
+          <input type="number" name="max_players" value="{{ max_players }}" min="1" max="64"
+                 class="form-control" style="width:90px; text-align:center;">
+          <button type="submit" class="btn-action apply" style="white-space:nowrap;">
+            <i class="fa-solid fa-check"></i> {{ _('Save') }}
+          </button>
+        </form>
+        <small style="color:#94a3b8; font-size:0.75rem; margin-top:0.4rem; display:block;">
+          {{ _('Maximum player count shown on Dashboard') }}
+        </small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-terminal"></i>{{ _('Log Viewer') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <p style="font-size:0.82rem; color:#64748b; margin-bottom:0.75rem;">
+          {{ _('Follow server logs in real time.') }}
+        </p>
+        <a href="{{ url_for('server.logs') }}" class="btn-action apply" style="justify-content:center; display:flex;">
+          <i class="fa-solid fa-arrow-right"></i> {{ _('Go to Logs') }}
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-network-wired"></i>{{ _('Connection Info') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <div style="font-family:monospace; font-size:0.95rem; font-weight:600; color:#1e293b; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:0.6rem 1rem; display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+          <span id="connStr">connect {{ server_ip }}:{{ server_port }}</span>
+          <button onclick="navigator.clipboard.writeText('connect {{ server_ip }}:{{ server_port }}'); this.innerHTML='<i class=\'fa-solid fa-check\'></i>'; setTimeout(()=>this.innerHTML='<i class=\'fa-solid fa-copy\'></i>',1500);" class="btn-action muted" style="padding:0.25rem 0.5rem; font-size:0.75rem;" title="{{ _('Copy') }}">
+            <i class="fa-solid fa-copy"></i>
+          </button>
+        </div>
+        <small style="color:#94a3b8; font-size:0.75rem; margin-top:0.4rem; display:block;">
+          IP: <strong>{{ server_ip }}</strong> &nbsp; Port: <strong>{{ server_port }}</strong>
+        </small>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

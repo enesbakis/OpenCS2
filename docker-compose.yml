@@ -1,0 +1,62 @@
+services:
+  cs2:
+    image: joedwards32/cs2
+    container_name: cs2-server
+    restart: unless-stopped
+    # host networking fixes Steam CDN issues on Linux
+    # when using network_mode: host, set RCON_HOST to the server's IP
+    network_mode: host
+    environment:
+      CS2_SERVERNAME: "${CS2_SERVERNAME:-CS2 Server}"
+      CS2_PORT: "${CS2_PORT:-27015}"
+      CS2_MAXPLAYERS: "${CS2_MAXPLAYERS:-16}"
+      CS2_RCONPW: "${RCON_PASSWORD}"
+      CS2_PW: "${CS2_PASSWORD:-}"
+      CS2_GAMETYPE: "${CS2_GAMETYPE:-0}"
+      CS2_GAMEMODE: "${CS2_GAMEMODE:-1}"
+      CS2_MAPGROUP: "${CS2_MAPGROUP:-mg_active}"
+      CS2_STARTMAP: "${CS2_STARTMAP:-de_dust2}"
+      CS2_SOURCEMOD: "1"
+      SRCDS_TOKEN: "${CS2_GSLT:-}"
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "1"
+    volumes:
+      - cs2-data:/home/steam/cs2-dedicated
+    # network_mode: host — ports and networks blocks cannot be used
+
+  panel:
+    # build from source (default)
+    build: ./panel
+    # to use the pre-built GHCR image instead, comment out 'build' and uncomment 'image':
+    # image: ghcr.io/enesbakis/opencs2:latest
+    container_name: cs2-panel
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      # cs2 runs with network_mode: host, so it's reachable via host.docker.internal
+      RCON_HOST: "${SERVER_IP:-host.docker.internal}"
+      RCON_PORT: "${CS2_PORT:-27015}"
+      RCON_PASSWORD: "${RCON_PASSWORD}"
+      CS2_DATA_PATH: "/cs2-data"
+      SECRET_KEY: "${SECRET_KEY:-please-change-this-to-a-random-secret-key}"
+      PANEL_ADMIN_USER: "${PANEL_ADMIN_USER:-admin}"
+      PANEL_ADMIN_PASS: "${PANEL_ADMIN_PASS:-changeme}"
+      SERVER_IP: "${SERVER_IP:-127.0.0.1}"
+      CS2_PORT: "${CS2_PORT:-27015}"
+    ports:
+      - "${PANEL_PORT:-5000}:5000"
+    volumes:
+      - cs2-data:/cs2-data
+      - panel-data:/app/data
+    networks:
+      - cs2-net
+    depends_on:
+      - cs2
+
+volumes:
+  cs2-data:
+  panel-data:
+
+networks:
+  cs2-net:
+    driver: bridge

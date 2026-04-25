@@ -1,0 +1,1118 @@
+# Turkish translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-25 18:27+0300\n"
+"PO-Revision-Date: 2026-04-25 18:28+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: tr\n"
+"Language-Team: tr <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: app/auth.py:19 app/users.py:33
+msgid "Username and password are required."
+msgstr "Kullanıcı adı ve şifre gereklidir."
+
+#: app/auth.py:28
+msgid "Invalid username or password."
+msgstr "Geçersiz kullanıcı adı veya şifre."
+
+#: app/auth.py:37
+msgid "Logged out."
+msgstr "Çıkış yapıldı."
+
+#: app/csadmins.py:124
+msgid "Invalid name (max 64 characters)."
+msgstr "Geçersiz isim (maksimum 64 karakter)."
+
+#: app/csadmins.py:128
+msgid "Invalid Steam ID. Use Steam64 (17 digits) or STEAM_X:X:X format."
+msgstr "Geçersiz Steam ID. Steam64 (17 haneli) veya STEAM_X:X:X formatı kullanın."
+
+#: app/csadmins.py:136
+msgid "Immunity must be a number between 0 and 255."
+msgstr "Bağışıklık 0-255 arasında bir sayı olmalıdır."
+
+#: app/csadmins.py:158
+#, python-format
+msgid "Admin \"%(n)s\" added."
+msgstr ""
+
+#: app/csadmins.py:169 app/csadmins.py:236
+msgid "Admin not found."
+msgstr "Admin bulunamadı."
+
+#: app/csadmins.py:180
+msgid "Invalid name."
+msgstr "Geçersiz isim."
+
+#: app/csadmins.py:184
+msgid "Invalid Steam ID."
+msgstr "Geçersiz Steam ID."
+
+#: app/csadmins.py:192 app/csadmins.py:266
+msgid "Immunity must be between 0 and 255."
+msgstr "Bağışıklık 0-255 arasında olmalıdır."
+
+#: app/csadmins.py:198
+#, python-format
+msgid "This Steam ID is already registered as \"%(n)s\"."
+msgstr ""
+
+#: app/csadmins.py:216
+#, python-format
+msgid "\"%(n)s\" updated."
+msgstr ""
+
+#: app/csadmins.py:242 app/plugins.py:438
+#, python-format
+msgid "\"%(n)s\" deleted."
+msgstr ""
+
+#: app/csadmins.py:258
+msgid "Group name is too long."
+msgstr "Grup adı çok uzun."
+
+#: app/csadmins.py:271
+#, python-format
+msgid "Group \"%(n)s\" already exists."
+msgstr ""
+
+#: app/csadmins.py:283
+#, python-format
+msgid "Group \"%(n)s\" created."
+msgstr ""
+
+#: app/csadmins.py:292
+msgid "Group not found."
+msgstr "Grup bulunamadı."
+
+#: app/csadmins.py:298
+#, python-format
+msgid "Group \"%(n)s\" deleted."
+msgstr ""
+
+#: app/dashboard.py:158
+msgid "Invalid character in password."
+msgstr "Şifrede geçersiz karakter."
+
+#: app/dashboard.py:164
+msgid "Server password updated."
+msgstr "Sunucu şifresi güncellendi."
+
+#: app/dashboard.py:164
+msgid "Server password removed."
+msgstr "Sunucu şifresi kaldırıldı."
+
+#: app/dashboard.py:166 app/dashboard.py:183
+#, python-format
+msgid "Error: %(e)s"
+msgstr "Hata: %(e)s"
+
+#: app/dashboard.py:175 app/maps.py:183 app/maps.py:218 app/maps.py:240
+msgid "Invalid map name."
+msgstr "Geçersiz harita adı."
+
+#: app/dashboard.py:181
+#, python-format
+msgid "Map changed → %(m)s"
+msgstr "Harita değiştirildi → %(m)s"
+
+#: app/dashboard.py:196
+msgid "Invalid player ID."
+msgstr "Geçersiz oyuncu ID."
+
+#: app/dashboard.py:204
+msgid "Player kicked."
+msgstr "Oyuncu sunucudan atıldı."
+
+#: app/dashboard.py:208
+#, python-format
+msgid "Player banned for %(d)s minutes."
+msgstr "Oyuncu %(d)s dakika banlandı."
+
+#: app/dashboard.py:211
+msgid "Player slayed."
+msgstr "Oyuncu öldürüldü."
+
+#: app/dashboard.py:213
+msgid "Unknown action."
+msgstr "Bilinmeyen işlem."
+
+#: app/dashboard.py:215 app/server.py:101 app/server.py:155
+#, python-format
+msgid "RCON error: %(e)s"
+msgstr "RCON hatası: %(e)s"
+
+#: app/maps.py:122 app/plugins.py:307
+msgid "No file selected."
+msgstr "Dosya seçilmedi."
+
+#: app/maps.py:130
+msgid "Only .bsp, .vpk or .zip files are accepted."
+msgstr "Yalnızca .bsp, .vpk veya .zip dosyaları kabul edilir."
+
+#: app/maps.py:141
+msgid "Invalid ZIP file."
+msgstr "Geçersiz ZIP dosyası."
+
+#: app/maps.py:162
+#, python-format
+msgid "Extracted from ZIP: %(files)s"
+msgstr "ZIP içinden çıkarıldı: %(files)s"
+
+#: app/maps.py:164
+msgid "No .bsp or .vpk found in ZIP."
+msgstr "ZIP içinde .bsp veya .vpk bulunamadı."
+
+#: app/maps.py:170
+msgid "Security error: invalid file path."
+msgstr "Güvenlik hatası: geçersiz dosya yolu."
+
+#: app/maps.py:175
+#, python-format
+msgid "Map %(f)s uploaded."
+msgstr "%(f)s haritası yüklendi."
+
+#: app/maps.py:193 app/plugins.py:354 app/plugins.py:398
+msgid "Security error."
+msgstr "Güvenlik hatası."
+
+#: app/maps.py:206
+#, python-format
+msgid "%(m)s deleted."
+msgstr "%(m)s silindi."
+
+#: app/maps.py:208
+msgid "Map file not found (.bsp/.vpk)."
+msgstr "Harita dosyası bulunamadı (.bsp/.vpk)."
+
+#: app/maps.py:224
+#, python-format
+msgid "%(m)s removed from mapcycle."
+msgstr "%(m)s harita döngüsünden kaldırıldı."
+
+#: app/maps.py:227
+#, python-format
+msgid "%(m)s added to mapcycle."
+msgstr "%(m)s harita döngüsüne eklendi."
+
+#: app/maps.py:247
+#, python-format
+msgid "%(m)s removed from quick menu."
+msgstr "%(m)s hızlı menüden kaldırıldı."
+
+#: app/maps.py:250
+#, python-format
+msgid "%(m)s added to quick menu."
+msgstr "%(m)s hızlı menüye eklendi."
+
+#: app/metamod.py:183
+#, python-format
+msgid "Installation failed: %(msg)s"
+msgstr "Kurulum başarısız: %(msg)s"
+
+#: app/metamod.py:186
+#, python-format
+msgid "Metamod installed → %(msg)s"
+msgstr "Metamod kuruldu → %(msg)s"
+
+#: app/metamod.py:192
+#, python-format
+msgid "gameinfo.gi: %(msg)s"
+msgstr "gameinfo.gi: %(msg)s"
+
+#: app/plugins.py:314
+msgid "Unsupported file type. (.zip, .tar.gz, .so, .vdf)"
+msgstr "Desteklenmeyen dosya türü. (.zip, .tar.gz, .so, .vdf)"
+
+#: app/plugins.py:324
+msgid "Invalid plugin name. (use letters, numbers, _ and -)"
+msgstr "Geçersiz eklenti adı. (harf, rakam, _ ve - kullanın)"
+
+#: app/plugins.py:328
+msgid "This name is reserved by the system."
+msgstr "Bu isim sistem tarafından rezerve edilmiştir."
+
+#: app/plugins.py:342
+#, python-format
+msgid "Archive extraction error: %(e)s"
+msgstr "Arşiv çıkarma hatası: %(e)s"
+
+#: app/plugins.py:359
+#, python-format
+msgid "Plugin \"%(n)s\" uploaded."
+msgstr ""
+
+#: app/plugins.py:363
+#, python-format
+msgid "Upload error: %(e)s"
+msgstr "Yükleme hatası: %(e)s"
+
+#: app/plugins.py:375 app/plugins.py:417 app/plugins.py:451
+msgid "Invalid plugin name."
+msgstr "Geçersiz eklenti adı."
+
+#: app/plugins.py:379
+msgid "System plugin cannot be modified."
+msgstr "Sistem eklentisi değiştirilemez."
+
+#: app/plugins.py:384 app/plugins.py:426 app/plugins.py:456
+msgid "Plugin not found."
+msgstr "Eklenti bulunamadı."
+
+#: app/plugins.py:392
+#, python-format
+msgid "\"%(n)s\" disabled."
+msgstr ""
+
+#: app/plugins.py:395
+#, python-format
+msgid "\"%(n)s\" enabled."
+msgstr ""
+
+#: app/plugins.py:408
+#, python-format
+msgid "Status change error: %(e)s"
+msgstr "Durum değiştirme hatası: %(e)s"
+
+#: app/plugins.py:421
+msgid "System plugin cannot be deleted."
+msgstr "Sistem eklentisi silinemez."
+
+#: app/plugins.py:433
+msgid "Security error: invalid path."
+msgstr "Güvenlik hatası: geçersiz yol."
+
+#: app/plugins.py:442
+#, python-format
+msgid "Delete error: %(e)s"
+msgstr "Silme hatası: %(e)s"
+
+#: app/plugins.py:470
+msgid "Invalid file path."
+msgstr "Geçersiz dosya yolu."
+
+#: app/plugins.py:478
+#, python-format
+msgid "Could not read file: %(e)s"
+msgstr "Dosya okunamadı: %(e)s"
+
+#: app/server.py:92
+msgid "Invalid server name (1-128 characters)."
+msgstr "Geçersiz sunucu adı (1-128 karakter)."
+
+#: app/server.py:99
+#, python-format
+msgid "Server name → %(name)s"
+msgstr "Sunucu adı → %(name)s"
+
+#: app/server.py:110
+msgid "Invalid value. Enter a number between 1 and 64."
+msgstr "Geçersiz değer. 1-64 arasında bir sayı girin."
+
+#: app/server.py:115
+#, python-format
+msgid "Maximum player count saved as %(n)s."
+msgstr "Maksimum oyuncu sayısı %(n)s olarak kaydedildi."
+
+#: app/server.py:131
+msgid "server.cfg saved and loaded."
+msgstr "server.cfg kaydedildi ve yüklendi."
+
+#: app/server.py:135
+msgid "server.cfg saved — could not exec via RCON."
+msgstr "server.cfg kaydedildi — RCON üzerinden çalıştırılamadı."
+
+#: app/server.py:144
+msgid "Invalid game mode."
+msgstr "Geçersiz oyun modu."
+
+#: app/server.py:153
+#, python-format
+msgid "Game mode → %(m)s"
+msgstr "Oyun modu → %(m)s"
+
+#: app/server.py:183
+msgid "Invalid log file."
+msgstr "Geçersiz log dosyası."
+
+#: app/users.py:36
+msgid "Username may only contain letters, numbers, _ and - (max 32 chars)."
+msgstr "Kullanıcı adı yalnızca harf, rakam, _ ve - içerebilir (maks. 32 karakter)."
+
+#: app/users.py:39
+msgid "Passwords do not match."
+msgstr "Şifreler eşleşmiyor."
+
+#: app/users.py:42
+msgid "Password must be at least 6 characters."
+msgstr "Şifre en az 6 karakter olmalıdır."
+
+#: app/users.py:45
+msgid "This username is already taken."
+msgstr "Bu kullanıcı adı zaten alınmış."
+
+#: app/users.py:51
+#, python-format
+msgid "User \"%(u)s\" created."
+msgstr ""
+
+#: app/users.py:59
+msgid "You cannot delete your own account."
+msgstr "Kendi hesabınızı silemezsiniz."
+
+#: app/users.py:64
+msgid "User deleted."
+msgstr "Kullanıcı silindi."
+
+#: app/users.py:73
+msgid "New password must be at least 6 characters."
+msgstr "Yeni şifre en az 6 karakter olmalıdır."
+
+#: app/users.py:78
+msgid "Password updated."
+msgstr "Şifre güncellendi."
+
+#: app/templates/audit.html:8
+msgid "Action History"
+msgstr "İşlem Geçmişi"
+
+#: app/templates/audit.html:9
+#, python-format
+msgid "Last %(n)s records"
+msgstr "Son %(n)s kayıt"
+
+#: app/templates/audit.html:17
+msgid "Time"
+msgstr "Zaman"
+
+#: app/templates/audit.html:18
+msgid "User"
+msgstr "Kullanıcı"
+
+#: app/templates/audit.html:19
+msgid "Action"
+msgstr "İşlem"
+
+#: app/templates/audit.html:20
+msgid "Detail"
+msgstr "Detay"
+
+#: app/templates/audit.html:47
+msgid "No action records yet"
+msgstr "Henüz işlem kaydı yok"
+
+#: app/templates/base.html:31
+msgid "General"
+msgstr "Genel"
+
+#: app/templates/base.html:37 app/templates/base.html:102
+msgid "Server"
+msgstr "Sunucu"
+
+#: app/templates/base.html:40
+msgid "Map Management"
+msgstr "Harita Yönetimi"
+
+#: app/templates/base.html:52
+msgid "Plugins"
+msgstr "Eklentiler"
+
+#: app/templates/base.html:56 app/templates/server_settings.html:2
+#: app/templates/server_settings.html:3
+msgid "Server Settings"
+msgstr "Sunucu Ayarları"
+
+#: app/templates/base.html:60 app/templates/logs.html:2
+msgid "Logs"
+msgstr "Loglar"
+
+#: app/templates/base.html:63
+msgid "Management"
+msgstr "Yönetim"
+
+#: app/templates/base.html:66
+msgid "CS Admin Management"
+msgstr "CS Admin Yönetimi"
+
+#: app/templates/base.html:70 app/templates/users.html:3
+msgid "Panel Users"
+msgstr "Panel Kullanıcıları"
+
+#: app/templates/base.html:83
+msgid "Logout"
+msgstr "Çıkış"
+
+#: app/templates/base.html:114
+msgid "Theme"
+msgstr "Tema"
+
+#: app/templates/base.html:125
+msgid "Plugin change detected —"
+msgstr "Eklenti değişikliği algılandı —"
+
+#: app/templates/base.html:125
+msgid "Server restart required"
+msgstr "Sunucu yeniden başlatma gerekli"
+
+#: app/templates/base.html:129 app/templates/base.html:208
+#: app/templates/base.html:214
+msgid "Restart"
+msgstr "Yeniden Başlat"
+
+#: app/templates/base.html:132
+msgid "Done, restarted"
+msgstr "Tamamlandı, yeniden başlatıldı"
+
+#: app/templates/base.html:200
+msgid "Sending..."
+msgstr "Gönderiliyor..."
+
+#: app/templates/base.html:205
+msgid "Sent"
+msgstr "Gönderildi"
+
+#: app/templates/base.html:210
+msgid "RCON Error:"
+msgstr "RCON Hatası:"
+
+#: app/templates/base.html:210
+msgid "Unknown error"
+msgstr "Bilinmeyen hata"
+
+#: app/templates/counterstrikesharp.html:12
+msgid "CounterStrikeSharp Status"
+msgstr "CounterStrikeSharp Durumu"
+
+#: app/templates/counterstrikesharp.html:31
+msgid "Metamod installed — ready for CounterStrikeSharp"
+msgstr "Metamod kurulu — CounterStrikeSharp için hazır"
+
+#: app/templates/counterstrikesharp.html:33
+msgid "Metamod not installed. You must install Metamod first."
+msgstr "Metamod kurulu değil. Önce Metamod kurmalısınız."
+
+#: app/templates/counterstrikesharp.html:40
+msgid "Install Metamod"
+msgstr "Metamod Kur"
+
+#: app/templates/counterstrikesharp.html:43
+msgid "READY"
+msgstr "HAZIR"
+
+#: app/templates/counterstrikesharp.html:57 app/templates/metamod.html:29
+msgid "Installation Status"
+msgstr "Kurulum Durumu"
+
+#: app/templates/counterstrikesharp.html:61
+msgid "CounterStrikeSharp installed"
+msgstr "CounterStrikeSharp kurulu"
+
+#: app/templates/counterstrikesharp.html:64
+msgid "CounterStrikeSharp not installed"
+msgstr "CounterStrikeSharp kurulu değil"
+
+#: app/templates/counterstrikesharp.html:70 app/templates/metamod.html:42
+msgid "INSTALLED"
+msgstr "KURULU"
+
+#: app/templates/counterstrikesharp.html:72 app/templates/metamod.html:44
+msgid "NOT INSTALLED"
+msgstr "KURULU DEĞİL"
+
+#: app/templates/counterstrikesharp.html:84
+msgid "GitHub Latest Version"
+msgstr "GitHub Son Sürüm"
+
+#: app/templates/counterstrikesharp.html:86 app/templates/metamod.html:97
+msgid "Checking..."
+msgstr "Kontrol ediliyor..."
+
+#: app/templates/counterstrikesharp.html:98 app/templates/metamod.html:110
+msgid "Notes"
+msgstr "Notlar"
+
+#: app/templates/counterstrikesharp.html:102
+msgid "CounterStrikeSharp (CSS) requires"
+msgstr "CounterStrikeSharp (CSS) gerektirir"
+
+#: app/templates/counterstrikesharp.html:102
+msgid "— install it first."
+msgstr "— önce onu kurun."
+
+#: app/templates/counterstrikesharp.html:103
+msgid "Installation uses the"
+msgstr "Kurulum şunu kullanır:"
+
+#: app/templates/counterstrikesharp.html:103
+msgid "package, no separate .NET runtime needed."
+msgstr "paketi, ayrı .NET runtime gerekmez."
+
+#: app/templates/counterstrikesharp.html:104
+msgid "Files are extracted to"
+msgstr "Dosyalar buraya çıkarılır:"
+
+#: app/templates/counterstrikesharp.html:104
+#: app/templates/counterstrikesharp.html:106
+msgid "."
+msgstr ""
+
+#: app/templates/counterstrikesharp.html:105 app/templates/metamod.html:114
+msgid "Restart CS2 container after installation:"
+msgstr "Kurulumdan sonra CS2 konteynerini yeniden başlatın:"
+
+#: app/templates/counterstrikesharp.html:106
+msgid "CSS plugins go under"
+msgstr "CSS eklentileri buraya yerleştirilir:"
+
+#: app/templates/counterstrikesharp.html:107
+msgid "Reinstalling over an existing installation is supported (for updates)."
+msgstr "Mevcut kurulumun üzerine yeniden kurulum desteklenir (güncellemeler için)."
+
+#: app/templates/counterstrikesharp.html:117 app/templates/metamod.html:128
+msgid "Installation"
+msgstr "Kurulum"
+
+#: app/templates/counterstrikesharp.html:125
+#: app/templates/counterstrikesharp.html:141
+msgid "Reinstall / Update"
+msgstr "Yeniden Kur / Güncelle"
+
+#: app/templates/counterstrikesharp.html:125
+#: app/templates/counterstrikesharp.html:141 app/templates/metamod.html:136
+#: app/templates/metamod.html:153
+msgid "Download & Install"
+msgstr "İndir ve Kur"
+
+#: app/templates/counterstrikesharp.html:128
+msgid "Your browser downloads from GitHub, the panel installs."
+msgstr "Tarayıcınız GitHub'dan indirir, panel kurar."
+
+#: app/templates/counterstrikesharp.html:128
+msgid "package is selected."
+msgstr "paketi seçildi."
+
+#: app/templates/counterstrikesharp.html:132 app/templates/metamod.html:144
+msgid "Preparing..."
+msgstr "Hazırlanıyor..."
+
+#: app/templates/counterstrikesharp.html:139
+msgid "Install Metamod first"
+msgstr "Önce Metamod Kurun"
+
+#: app/templates/counterstrikesharp.html:148 app/templates/metamod.html:160
+msgid "Manual Upload"
+msgstr "Manuel Yükleme"
+
+#: app/templates/counterstrikesharp.html:152
+msgid "download"
+msgstr "indirin"
+
+#: app/templates/counterstrikesharp.html:153
+msgid "and upload it here."
+msgstr "ve buraya yükleyin."
+
+#: app/templates/counterstrikesharp.html:159
+#: app/templates/counterstrikesharp.html:294
+#: app/templates/counterstrikesharp.html:299 app/templates/metamod.html:170
+#: app/templates/metamod.html:316 app/templates/metamod.html:321
+msgid "Upload & Install"
+msgstr "Yükle ve Kur"
+
+#: app/templates/counterstrikesharp.html:167 app/templates/metamod.html:191
+msgid "Installation Directory"
+msgstr "Kurulum Dizini"
+
+#: app/templates/counterstrikesharp.html:171
+msgid "CSS plugins"
+msgstr "CSS eklentileri"
+
+#: app/templates/counterstrikesharp.html:179
+msgid "Documentation"
+msgstr "Dokümantasyon"
+
+#: app/templates/counterstrikesharp.html:203
+msgid "Fetching latest GitHub release URL..."
+msgstr "En son GitHub sürüm URL'si alınıyor..."
+
+#: app/templates/counterstrikesharp.html:210 app/templates/metamod.html:231
+msgid "Could not get URL"
+msgstr "URL alınamadı"
+
+#: app/templates/counterstrikesharp.html:214 app/templates/metamod.html:235
+msgid "Could not get URL:"
+msgstr "URL alınamadı:"
+
+#: app/templates/counterstrikesharp.html:218
+msgid "Downloading via browser... (this may take a while)"
+msgstr "Tarayıcı üzerinden indiriliyor... (bu biraz sürebilir)"
+
+#: app/templates/counterstrikesharp.html:239 app/templates/metamod.html:261
+msgid "Downloading..."
+msgstr "İndiriliyor..."
+
+#: app/templates/counterstrikesharp.html:244
+msgid "Download failed:"
+msgstr "İndirme başarısız:"
+
+#: app/templates/counterstrikesharp.html:245 app/templates/metamod.html:267
+msgid "Try the manual upload method."
+msgstr "Manuel yükleme yöntemini deneyin."
+
+#: app/templates/counterstrikesharp.html:250 app/templates/metamod.html:272
+msgid "Sending to panel..."
+msgstr "Panele gönderiliyor..."
+
+#: app/templates/counterstrikesharp.html:260
+msgid "CounterStrikeSharp installed!"
+msgstr "CounterStrikeSharp kuruldu!"
+
+#: app/templates/counterstrikesharp.html:261 app/templates/metamod.html:283
+msgid "Remember to restart CS2."
+msgstr "CS2'yi yeniden başlatmayı unutmayın."
+
+#: app/templates/counterstrikesharp.html:264
+#: app/templates/counterstrikesharp.html:292 app/templates/metamod.html:286
+#: app/templates/metamod.html:314
+msgid "Installation failed"
+msgstr "Kurulum başarısız"
+
+#: app/templates/counterstrikesharp.html:267 app/templates/metamod.html:289
+msgid "Error sending to server:"
+msgstr "Sunucuya gönderme hatası:"
+
+#: app/templates/counterstrikesharp.html:279 app/templates/metamod.html:301
+msgid "Installing..."
+msgstr "Kuruluyor..."
+
+#: app/templates/counterstrikesharp.html:288 app/templates/metamod.html:310
+msgid "Installed!"
+msgstr "Kuruldu!"
+
+#: app/templates/counterstrikesharp.html:289 app/templates/metamod.html:311
+msgid "Restart CS2."
+msgstr "CS2'yi yeniden başlatın."
+
+#: app/templates/counterstrikesharp.html:297 app/templates/dashboard.html:340
+#: app/templates/metamod.html:319
+msgid "Error:"
+msgstr "Hata:"
+
+#: app/templates/counterstrikesharp.html:318 app/templates/metamod.html:340
+msgid "Retry"
+msgstr "Yeniden Dene"
+
+#: app/templates/counterstrikesharp.html:334
+msgid "Could not fetch"
+msgstr "Alınamadı"
+
+#: app/templates/counterstrikesharp.html:337 app/templates/metamod.html:358
+msgid "Connection error"
+msgstr "Bağlantı hatası"
+
+#: app/templates/csadmin_edit.html:2 app/templates/csadmin_edit.html:3
+msgid "Edit Admin"
+msgstr "Admin Düzenle"
+
+#: app/templates/csadmin_edit.html:12
+msgid "Back"
+msgstr "Geri"
+
+#: app/templates/csadmin_edit.html:18
+msgid "Display Name"
+msgstr "Görünen Ad"
+
+#: app/templates/csadmin_edit.html:29
+msgid "Steam64 (17 digits) or STEAM_X:X:X"
+msgstr "Steam64 (17 haneli) veya STEAM_X:X:X"
+
+#: app/templates/csadmin_edit.html:37
+msgid "Permissions"
+msgstr "İzinler"
+
+#: app/templates/csadmin_edit.html:51
+msgid "Groups"
+msgstr "Gruplar"
+
+#: app/templates/csadmin_edit.html:51
+msgid "optional"
+msgstr "isteğe bağlı"
+
+#: app/templates/csadmin_edit.html:65 app/templates/server_settings.html:21
+#: app/templates/server_settings.html:41 app/templates/server_settings.html:83
+msgid "Save"
+msgstr "Kaydet"
+
+#: app/templates/csadmin_edit.html:68 app/templates/dashboard.html:250
+#: app/templates/users.html:120
+msgid "Cancel"
+msgstr "İptal"
+
+#: app/templates/dashboard.html:11
+msgid "Could not connect to RCON"
+msgstr "RCON'a bağlanılamadı"
+
+#: app/templates/dashboard.html:69 app/templates/server_settings.html:34
+msgid "Server Name"
+msgstr "Sunucu Adı"
+
+#: app/templates/dashboard.html:78
+msgid "Players"
+msgstr "Oyuncular"
+
+#: app/templates/dashboard.html:90
+msgid "Active Map"
+msgstr "Aktif Harita"
+
+#: app/templates/dashboard.html:99
+msgid "Next Map"
+msgstr "Sonraki Harita"
+
+#: app/templates/dashboard.html:109
+msgid "Server Password"
+msgstr "Sunucu Şifresi"
+
+#: app/templates/dashboard.html:114
+msgid "Leave empty for no password"
+msgstr "Şifresiz için boş bırakın"
+
+#: app/templates/dashboard.html:116 app/templates/server_settings.html:68
+msgid "Apply"
+msgstr "Uygula"
+
+#: app/templates/dashboard.html:120
+msgid "Required for password-protected server. Leave empty for public."
+msgstr "Şifreli sunucu için gerekli. Herkese açık için boş bırakın."
+
+#: app/templates/dashboard.html:128
+msgid "Quick Map Change"
+msgstr "Hızlı Harita Değiştir"
+
+#: app/templates/dashboard.html:138
+msgid "Switch"
+msgstr "Geç"
+
+#: app/templates/dashboard.html:149
+msgid "Active Players"
+msgstr "Aktif Oyuncular"
+
+#: app/templates/dashboard.html:150
+#, python-format
+msgid "%(count)s players"
+msgstr "%(count)s oyuncu"
+
+#: app/templates/dashboard.html:159
+msgid "Player Name"
+msgstr "Oyuncu Adı"
+
+#: app/templates/dashboard.html:162 app/templates/users.html:22
+msgid "Actions"
+msgstr "İşlemler"
+
+#: app/templates/dashboard.html:201
+msgid "No players on the server"
+msgstr "Sunucuda oyuncu yok"
+
+#: app/templates/dashboard.html:211
+msgid "RCON Console"
+msgstr "RCON Konsolu"
+
+#: app/templates/dashboard.html:212
+msgid "Execute CS2 commands via RCON"
+msgstr "RCON üzerinden CS2 komutları çalıştırın"
+
+#: app/templates/dashboard.html:221
+msgid "Enter command... (e.g.: meta list, status, sm_plugins)"
+msgstr "Komut girin... (örn.: meta list, status, sm_plugins)"
+
+#: app/templates/dashboard.html:223
+msgid "Send"
+msgstr "Gönder"
+
+#: app/templates/dashboard.html:237
+msgid "Apply Ban:"
+msgstr "Ban Uygula:"
+
+#: app/templates/dashboard.html:246
+msgid "Ban Duration (minutes, 0 = permanent)"
+msgstr "Ban Süresi (dakika, 0 = kalıcı)"
+
+#: app/templates/dashboard.html:252
+msgid "Apply Ban"
+msgstr "Ban Uygula"
+
+#: app/templates/dashboard.html:345
+msgid "Request error:"
+msgstr "İstek hatası:"
+
+#: app/templates/dashboard.html:365
+msgid "RCON Console ready. Enter command..."
+msgstr "RCON Konsolu hazır. Komut girin..."
+
+#: app/templates/login.html:6
+msgid "Login"
+msgstr "Giriş"
+
+#: app/templates/login.html:17
+msgid "Sign in to server management panel"
+msgstr "Sunucu yönetim paneline giriş yapın"
+
+#: app/templates/login.html:33 app/templates/users.html:20
+#: app/templates/users.html:77
+msgid "Username"
+msgstr "Kullanıcı Adı"
+
+#: app/templates/login.html:38 app/templates/users.html:78
+msgid "username"
+msgstr "kullanıcı adı"
+
+#: app/templates/login.html:43 app/templates/users.html:47
+#: app/templates/users.html:85
+msgid "Password"
+msgstr "Şifre"
+
+#: app/templates/login.html:57
+msgid "Sign In"
+msgstr "Giriş Yap"
+
+#: app/templates/logs.html:3
+msgid "Server Logs"
+msgstr "Sunucu Logları"
+
+#: app/templates/logs.html:8
+msgid "Log File"
+msgstr "Log Dosyası"
+
+#: app/templates/logs.html:18
+msgid "Last 300 lines"
+msgstr "Son 300 satır"
+
+#: app/templates/logs.html:27
+msgid "Log file is empty or not found"
+msgstr "Log dosyası boş veya bulunamadı"
+
+#: app/templates/metamod.html:2 app/templates/metamod.html:3
+msgid "Metamod Management"
+msgstr "Metamod Yönetimi"
+
+#: app/templates/metamod.html:12
+msgid "Metamod:Source Status"
+msgstr "Metamod:Source Durumu"
+
+#: app/templates/metamod.html:33
+msgid "Metamod:Source installed"
+msgstr "Metamod:Source kurulu"
+
+#: app/templates/metamod.html:36
+msgid "Metamod:Source not installed"
+msgstr "Metamod:Source kurulu değil"
+
+#: app/templates/metamod.html:62
+msgid "Configured to load Metamod"
+msgstr "Metamod yüklemek için yapılandırıldı"
+
+#: app/templates/metamod.html:64
+msgid "gameinfo.gi not found — make sure the CS2 container is running"
+msgstr "gameinfo.gi bulunamadı — CS2 konteynerinin çalıştığından emin olun"
+
+#: app/templates/metamod.html:66
+msgid "Metamod entry missing, CS2 will not load Metamod"
+msgstr "Metamod girişi eksik, CS2 Metamod'u yüklemeyecek"
+
+#: app/templates/metamod.html:73
+msgid "PATCHED"
+msgstr "YAMALANMIŞ"
+
+#: app/templates/metamod.html:75
+msgid "NOT PATCHED"
+msgstr "YAMALANMAMİŞ"
+
+#: app/templates/metamod.html:79
+msgid "Patch"
+msgstr "Yamala"
+
+#: app/templates/metamod.html:95
+msgid "Latest Version"
+msgstr "Son Sürüm"
+
+#: app/templates/metamod.html:115
+msgid "Metamod is installed to"
+msgstr "Metamod şu dizine kurulu:"
+
+#: app/templates/metamod.html:115
+msgid " directory."
+msgstr " dizinine."
+
+#: app/templates/metamod.html:116
+msgid "patch is required for CS2 to load Metamod on startup."
+msgstr "CS2'nin başlangıçta Metamod'u yüklemesi için yama gereklidir."
+
+#: app/templates/metamod.html:117
+msgid "The original"
+msgstr "Orijinal"
+
+#: app/templates/metamod.html:117
+msgid "is backed up as"
+msgstr "olarak yedeklendi"
+
+#: app/templates/metamod.html:117
+msgid "before patching."
+msgstr "yamalamadan önce."
+
+#: app/templates/metamod.html:118
+msgid "Reinstalling over an existing installation is supported."
+msgstr "Mevcut kurulumun üzerine yeniden kurulum desteklenir."
+
+#: app/templates/metamod.html:136 app/templates/metamod.html:153
+msgid "Reinstall"
+msgstr "Yeniden Kur"
+
+#: app/templates/metamod.html:139
+msgid ""
+"Your browser downloads from AlliedMods, the panel installs. gameinfo.gi "
+"is automatically patched."
+msgstr ""
+
+#: app/templates/metamod.html:164
+msgid "Download"
+msgstr "İndir"
+
+#: app/templates/metamod.html:164
+msgid "the"
+msgstr ""
+
+#: app/templates/metamod.html:164
+msgid "file and upload it here."
+msgstr "dosyasını indirip buraya yükleyin."
+
+#: app/templates/metamod.html:182
+msgid "Patch gameinfo.gi"
+msgstr "gameinfo.gi Yamala"
+
+#: app/templates/metamod.html:200
+msgid "Build list"
+msgstr "Sürüm listesi"
+
+#: app/templates/metamod.html:224
+msgid "Fetching latest version URL..."
+msgstr "En son sürüm URL'si alınıyor..."
+
+#: app/templates/metamod.html:239
+msgid "Downloading via browser..."
+msgstr "Tarayıcı üzerinden indiriliyor..."
+
+#: app/templates/metamod.html:266
+msgid "Download failed (CORS or network error):"
+msgstr "İndirme başarısız (CORS veya ağ hatası):"
+
+#: app/templates/metamod.html:282
+msgid "Metamod installed!"
+msgstr "Metamod kuruldu!"
+
+#: app/templates/metamod.html:354
+msgid "Could not fetch version info"
+msgstr "Sürüm bilgisi alınamadı"
+
+#: app/templates/server_settings.html:38
+msgid "e.g. My CS2 Server"
+msgstr "örn. CS2 Sunucum"
+
+#: app/templates/server_settings.html:45
+msgid "Applied instantly via RCON."
+msgstr "RCON üzerinden anında uygulandı."
+
+#: app/templates/server_settings.html:52
+msgid "Game Mode"
+msgstr "Oyun Modu"
+
+#: app/templates/server_settings.html:76
+msgid "Max Players"
+msgstr "Maks. Oyuncu"
+
+#: app/templates/server_settings.html:87
+msgid "Maximum player count shown on Dashboard"
+msgstr "Gösterge Panelinde gösterilen maksimum oyuncu sayısı"
+
+#: app/templates/server_settings.html:94
+msgid "Log Viewer"
+msgstr "Log Görüntüleyici"
+
+#: app/templates/server_settings.html:98
+msgid "Follow server logs in real time."
+msgstr "Sunucu loglarını gerçek zamanlı takip edin."
+
+#: app/templates/server_settings.html:101
+msgid "Go to Logs"
+msgstr "Loglara Git"
+
+#: app/templates/server_settings.html:108
+msgid "Connection Info"
+msgstr "Bağlantı Bilgisi"
+
+#: app/templates/server_settings.html:113
+msgid "Copy"
+msgstr "Kopyala"
+
+#: app/templates/users.html:2
+msgid "Users"
+msgstr "Kullanıcılar"
+
+#: app/templates/users.html:12
+msgid "User List"
+msgstr "Kullanıcı Listesi"
+
+#: app/templates/users.html:13
+msgid "user(s)"
+msgstr "kullanıcı"
+
+#: app/templates/users.html:21
+msgid "Created"
+msgstr "Oluşturuldu"
+
+#: app/templates/users.html:36
+msgid "You"
+msgstr "Siz"
+
+#: app/templates/users.html:52
+#, python-format
+msgid "Delete %(name)s?"
+msgstr "%(name)s silinsin mi?"
+
+#: app/templates/users.html:72
+msgid "New User"
+msgstr "Yeni Kullanıcı"
+
+#: app/templates/users.html:81
+msgid "Letters, numbers, _ and - allowed"
+msgstr "Harf, rakam, _ ve - kullanılabilir"
+
+#: app/templates/users.html:89
+msgid "At least 6 characters"
+msgstr "En az 6 karakter"
+
+#: app/templates/users.html:93
+msgid "Create User"
+msgstr "Kullanıcı Oluştur"
+
+#: app/templates/users.html:109
+msgid "Change Password:"
+msgstr "Şifre Değiştir:"
+
+#: app/templates/users.html:115
+msgid "New Password"
+msgstr "Yeni Şifre"
+
+#: app/templates/users.html:122
+msgid "Change"
+msgstr "Değiştir"
+
