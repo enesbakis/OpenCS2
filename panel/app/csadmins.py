@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def _rcon_reload_admins() -> None:
     """Send css_admins_reload via RCON. Silently ignore if RCON is unavailable."""
     try:
-        from .rcon_client import rcon_execute, RCONError
+        from .rcon_client import rcon_execute
         host = current_app.config.get('RCON_HOST', '127.0.0.1')
         port = int(current_app.config.get('RCON_PORT', 27015))
         password = current_app.config.get('RCON_PASSWORD', '')
@@ -25,6 +25,7 @@ def _rcon_reload_admins() -> None:
         rcon_execute(host, port, password, 'css_admins_reload', timeout=3)
     except Exception as e:
         logger.debug('RCON css_admins_reload failed (non-critical): %s', e)
+
 
 csadmins_bp = Blueprint('csadmins', __name__, url_prefix='/csadmins')
 
@@ -114,11 +115,11 @@ def index():
 @csadmins_bp.route('/add', methods=['POST'])
 @login_required
 def add():
-    name     = request.form.get('name', '').strip()
+    name = request.form.get('name', '').strip()
     identity = request.form.get('identity', '').strip()
     immunity = request.form.get('immunity', '0').strip()
-    flags    = request.form.getlist('flags')
-    groups   = request.form.getlist('groups')
+    flags = request.form.getlist('flags')
+    groups = request.form.getlist('groups')
 
     if not _safe_name(name):
         flash(_('Invalid name (max 64 characters).'), 'danger')
@@ -173,8 +174,8 @@ def edit(admin_name: str):
         new_name = request.form.get('name', '').strip()
         identity = request.form.get('identity', '').strip()
         immunity = request.form.get('immunity', '0').strip()
-        flags    = request.form.getlist('flags')
-        grps     = request.form.getlist('groups')
+        flags = request.form.getlist('flags')
+        grps = request.form.getlist('groups')
 
         if not _safe_name(new_name):
             flash(_('Invalid name.'), 'danger')
@@ -248,9 +249,9 @@ def delete(admin_name: str):
 @csadmins_bp.route('/groups/add', methods=['POST'])
 @login_required
 def add_group():
-    name     = request.form.get('group_name', '').strip()
+    name = request.form.get('group_name', '').strip()
     immunity = request.form.get('group_immunity', '0').strip()
-    flags    = request.form.getlist('group_flags')
+    flags = request.form.getlist('group_flags')
 
     if not name.startswith('#'):
         name = '#' + name

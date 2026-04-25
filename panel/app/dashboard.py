@@ -29,6 +29,7 @@ def _get_quick_maps(db: str) -> list[str]:
             pass
     return list(_DEFAULT_QUICK_MAPS)
 
+
 dashboard_bp = Blueprint('dashboard', __name__)
 
 
@@ -37,7 +38,6 @@ dashboard_bp = Blueprint('dashboard', __name__)
 def _rcon(command: str) -> str:
     c = current_app.config
     return rcon_execute(c['RCON_HOST'], c['RCON_PORT'], c['RCON_PASSWORD'], command)
-
 
 
 def _get_next_map(current_map: str) -> str:
@@ -287,14 +287,14 @@ def api_metrics():
             pass
 
     return jsonify({
-        'cpu_percent':   round(cpu, 1),
-        'ram_used_mb':   round(mem.used   / 1024 ** 2),
-        'ram_total_mb':  round(mem.total  / 1024 ** 2),
-        'ram_percent':   round(mem.percent, 1),
-        'disk_used_gb':  round(disk.used  / 1024 ** 3, 1),
+        'cpu_percent': round(cpu, 1),
+        'ram_used_mb': round(mem.used / 1024 ** 2),
+        'ram_total_mb': round(mem.total / 1024 ** 2),
+        'ram_percent': round(mem.percent, 1),
+        'disk_used_gb': round(disk.used / 1024 ** 3, 1),
         'disk_total_gb': round(disk.total / 1024 ** 3, 1),
-        'disk_percent':  round(disk.percent, 1),
-        'log_mtime':     log_mtime,
+        'disk_percent': round(disk.percent, 1),
+        'log_mtime': log_mtime,
     })
 
 
