@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CS2 Panel{% endblock %} — CS2 Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a class="sidebar-brand" href="{{ url_for('dashboard.index') }}">
+      <div class="sidebar-brand-icon">
+        <i class="fa-solid fa-crosshairs"></i>
+      </div>
+      <div class="sidebar-brand-text">
+        <span class="sidebar-brand-title">CS2 Panel</span>
+        <span class="sidebar-brand-sub">Server Manager</span>
+      </div>
+    </a>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">{{ _('General') }}</div>
+      <a href="{{ url_for('dashboard.index') }}"
+         class="sidebar-link {% if request.endpoint and request.endpoint.startswith('dashboard.') %}active{% endif %}">
+        <i class="fa-solid fa-gauge nav-icon"></i>Dashboard
+      </a>
+
+      <div class="sidebar-section-label">{{ _('Server') }}</div>
+      <a href="{{ url_for('maps.index') }}"
+         class="sidebar-link {% if request.endpoint and request.endpoint.startswith('maps.') %}active{% endif %}">
+        <i class="fa-solid fa-map nav-icon"></i>{{ _('Map Management') }}
+      </a>
+      <a href="{{ url_for('metamod.index') }}"
+         class="sidebar-link {% if request.endpoint and request.endpoint.startswith('metamod.') %}active{% endif %}">
+        <i class="fa-solid fa-plug-circle-bolt nav-icon"></i>Metamod
+      </a>
+      <a href="{{ url_for('css.index') }}"
+         class="sidebar-link {% if request.endpoint and request.endpoint.startswith('css.') %}active{% endif %}">
+        <i class="fa-solid fa-code nav-icon"></i>CounterStrikeSharp
+      </a>
+      <a href="{{ url_for('plugins.index') }}"
+         class="sidebar-link {% if request.endpoint and request.endpoint.startswith('plugins.') %}active{% endif %}">
+        <i class="fa-solid fa-puzzle-piece nav-icon"></i>{{ _('Plugins') }}
+      </a>
+      <a href="{{ url_for('server.index') }}"
+         class="sidebar-link {% if request.endpoint == 'server.settings' %}active{% endif %}">
+        <i class="fa-solid fa-sliders nav-icon"></i>{{ _('Server Settings') }}
+      </a>
+      <a href="{{ url_for('server.logs') }}"
+         class="sidebar-link {% if request.endpoint == 'server.logs' %}active{% endif %}">
+        <i class="fa-solid fa-terminal nav-icon"></i>{{ _('Logs') }}
+      </a>
+
+      <div class="sidebar-section-label">{{ _('Management') }}</div>
+      <a href="{{ url_for('csadmins.index') }}"
+         class="sidebar-link {% if request.endpoint and request.endpoint.startswith('csadmins.') %}active{% endif %}">
+        <i class="fa-solid fa-shield-halved nav-icon"></i>{{ _('CS Admin Management') }}
+      </a>
+      <a href="{{ url_for('users.index') }}"
+         class="sidebar-link {% if request.endpoint and request.endpoint.startswith('users.') %}active{% endif %}">
+        <i class="fa-solid fa-users nav-icon"></i>{{ _('Panel Users') }}
+      </a>
+      <a href="{{ url_for('audit.index') }}"
+         class="sidebar-link {% if request.endpoint and request.endpoint.startswith('audit.') %}active{% endif %}">
+        <i class="fa-solid fa-clipboard-list nav-icon"></i>Audit Log
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-user">
+        <div class="sidebar-avatar">{{ current_user.username[0]|upper }}</div>
+        <div>
+          <div class="sidebar-username">{{ current_user.username }}</div>
+          <div class="sidebar-role">{{ _('Logout') }}</div>
+        </div>
+        <i class="fa-solid fa-arrow-right-from-bracket ms-auto" style="color:#475569; font-size:0.75rem;"></i>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebarToggle">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <span class="topbar-page-title">{% block page_title %}{% endblock %}</span>
+      </div>
+      <div class="topbar-right">
+        <span class="server-pill">
+          <span class="dot-online" id="topbarDot"></span>
+          <span id="topbarMap">{{ _('Server') }}</span>
+        </span>
+        <div class="dropdown ms-1">
+          <button class="btn-action muted dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                  style="padding:0.3rem 0.6rem; border-radius:8px; font-size:0.78rem;">
+            {% if get_locale() == 'tr' %}🇹🇷 TR{% else %}🇬🇧 EN{% endif %}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" style="min-width:8rem; font-size:0.82rem;">
+            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='en') }}?next={{ request.path }}">🇬🇧 English</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='tr') }}?next={{ request.path }}">🇹🇷 Türkçe</a></li>
+          </ul>
+        </div>
+        <button class="btn-action muted ms-1" id="darkToggle" title="{{ _('Theme') }}" style="padding:0.3rem 0.6rem; border-radius:8px;">
+          <i class="fa-solid fa-moon" id="darkIcon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Restart Warning Banner -->
+    <div id="restartBanner" style="display:none; padding:0.75rem 1.5rem 0;">
+      <div class="flash-bar warning" style="justify-content:space-between; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <i class="fa-solid fa-rotate"></i>
+          <span>{{ _('Plugin change detected —') }} <strong>{{ _('Server restart required') }}</strong></span>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <button id="restartBtn" onclick="restartServer(this)" class="btn-action apply" style="padding:0.3rem 0.75rem; font-size:0.8rem;">
+            <i class="fa-solid fa-power-off"></i> {{ _('Restart') }}
+          </button>
+          <button onclick="dismissRestart()" class="btn-action muted" style="padding:0.3rem 0.75rem; font-size:0.8rem;">
+            <i class="fa-solid fa-check"></i> {{ _('Done, restarted') }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="padding:0.75rem 1.5rem 0;">
+          {% for category, message in messages %}
+            <div class="flash-bar {{ category }}">
+              {% if category == 'success' %}<i class="fa-solid fa-circle-check"></i>
+              {% elif category == 'danger' %}<i class="fa-solid fa-circle-xmark"></i>
+              {% elif category == 'warning' %}<i class="fa-solid fa-triangle-exclamation"></i>
+              {% else %}<i class="fa-solid fa-circle-info"></i>{% endif %}
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <main class="page-body">
+      <div class="content-wrapper">
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const toggle  = document.getElementById('sidebarToggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('visible'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('visible'); });
+  }
+  const darkToggle = document.getElementById('darkToggle');
+  const darkIcon   = document.getElementById('darkIcon');
+  function applyTheme(dark) {
+    document.documentElement.setAttribute('data-bs-theme', dark ? 'dark' : 'light');
+    if (darkIcon) darkIcon.className = dark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+  }
+  applyTheme(localStorage.getItem('darkMode') === 'true');
+  if (darkToggle) {
+    darkToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+      localStorage.setItem('darkMode', !isDark);
+      applyTheme(!isDark);
+    });
+  }
+
+  // ── Restart Warning Banner ─────────────────────────────────────────────────
+  function checkRestartBanner() {
+    const banner = document.getElementById('restartBanner');
+    if (!banner) return;
+    banner.style.display = localStorage.getItem('cs2RestartNeeded') ? '' : 'none';
+  }
+  function dismissRestart() {
+    localStorage.removeItem('cs2RestartNeeded');
+    const banner = document.getElementById('restartBanner');
+    if (banner) banner.style.display = 'none';
+  }
+  function restartServer(btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> {{ _("Sending...") }}';
+    fetch('/api/restart_server', { method: 'POST', headers: {'Content-Type': 'application/json'} })
+      .then(r => r.json())
+      .then(d => {
+        if (d.ok) {
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> {{ _("Sent") }}';
+          dismissRestart();
+        } else {
+          btn.innerHTML = '<i class="fa-solid fa-power-off"></i> {{ _("Restart") }}';
+          btn.disabled = false;
+          alert('{{ _("RCON Error:") }} ' + (d.error || '{{ _("Unknown error") }}'));
+        }
+      })
+      .catch(() => {
+        btn.innerHTML = '<i class="fa-solid fa-power-off"></i> {{ _("Restart") }}';
+        btn.disabled = false;
+      });
+  }
+  checkRestartBanner();
+</script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

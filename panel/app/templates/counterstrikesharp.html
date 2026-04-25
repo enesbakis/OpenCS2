@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+{% block title %}CounterStrikeSharp{% endblock %}
+{% block page_title %}CounterStrikeSharp{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+
+  <!-- Sol: Durum Kartı -->
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-code"></i>{{ _('CounterStrikeSharp Status') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <div class="d-flex flex-column gap-3">
+
+          <!-- Metamod kontrolü -->
+          <div class="d-flex align-items-center justify-content-between p-3 rounded"
+               style="background:{% if metamod_ok %}#f0fdf4{% else %}#fef9c3{% endif %}; border:1px solid {% if metamod_ok %}#bbf7d0{% else %}#fde68a{% endif %};">
+            <div class="d-flex align-items-center gap-3">
+              <div style="width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+                          background:{% if metamod_ok %}#16a34a{% else %}#ca8a04{% endif %}; color:white; font-size:1.1rem;">
+                <i class="fa-solid {% if metamod_ok %}fa-circle-check{% else %}fa-triangle-exclamation{% endif %}"></i>
+              </div>
+              <div>
+                <div style="font-weight:600; color:{% if metamod_ok %}#14532d{% else %}#713f12{% endif %}; font-size:0.9rem;">
+                  Metamod:Source
+                </div>
+                <div style="font-size:0.78rem; color:{% if metamod_ok %}#15803d{% else %}#92400e{% endif %};">
+                  {% if metamod_ok %}
+                    {{ _('Metamod installed — ready for CounterStrikeSharp') }}
+                  {% else %}
+                    {{ _('Metamod not installed. You must install Metamod first.') }}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% if not metamod_ok %}
+            <a href="{{ url_for('metamod.index') }}" class="btn-action warning" style="font-size:0.75rem; white-space:nowrap;">
+              <i class="fa-solid fa-plug-circle-bolt"></i> {{ _('Install Metamod') }}
+            </a>
+            {% else %}
+            <span style="font-size:0.72rem; font-weight:600; color:#15803d; background:#bbf7d0; padding:0.2rem 0.6rem; border-radius:12px;">{{ _('READY') }}</span>
+            {% endif %}
+          </div>
+
+          <!-- CSS Kurulum Durumu -->
+          <div class="d-flex align-items-center justify-content-between p-3 rounded"
+               style="background:{% if installed %}#dcfce7{% else %}#fee2e2{% endif %}; border:1px solid {% if installed %}#bbf7d0{% else %}#fecaca{% endif %};">
+            <div class="d-flex align-items-center gap-3">
+              <div style="width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+                          background:{% if installed %}#16a34a{% else %}#dc2626{% endif %}; color:white; font-size:1.1rem;">
+                <i class="fa-solid {% if installed %}fa-circle-check{% else %}fa-circle-xmark{% endif %}"></i>
+              </div>
+              <div>
+                <div style="font-weight:600; color:{% if installed %}#14532d{% else %}#7f1d1d{% endif %}; font-size:0.9rem;">
+                  {{ _('Installation Status') }}
+                </div>
+                <div style="font-size:0.78rem; color:{% if installed %}#15803d{% else %}#991b1b{% endif %};">
+                  {% if installed %}
+                    {{ _('CounterStrikeSharp installed') }}
+                    {% if version %}&nbsp;·&nbsp;<code style="font-size:0.75rem;">{{ version }}</code>{% endif %}
+                  {% else %}
+                    {{ _('CounterStrikeSharp not installed') }}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% if installed %}
+              <span style="font-size:0.72rem; font-weight:600; color:#15803d; background:#bbf7d0; padding:0.2rem 0.6rem; border-radius:12px;">{{ _('INSTALLED') }}</span>
+            {% else %}
+              <span style="font-size:0.72rem; font-weight:600; color:#991b1b; background:#fecaca; padding:0.2rem 0.6rem; border-radius:12px;">{{ _('NOT INSTALLED') }}</span>
+            {% endif %}
+          </div>
+
+          <!-- Son Sürüm -->
+          <div class="d-flex align-items-center gap-3 p-3 rounded"
+               style="background:#f1f5f9; border:1px solid #e2e8f0;">
+            <div style="width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+                        background:#6366f1; color:white; font-size:1.1rem;">
+              <i class="fa-solid fa-cloud-arrow-down"></i>
+            </div>
+            <div>
+              <div style="font-weight:600; color:#1e293b; font-size:0.9rem;">{{ _('GitHub Latest Version') }}</div>
+              <div style="font-size:0.78rem; color:#475569;" id="latestTagLabel">
+                <i class="fa-solid fa-spinner fa-spin" style="color:#6366f1;"></i> {{ _('Checking...') }}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Notlar -->
+    <div class="card mt-3">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-circle-info"></i>{{ _('Notes') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <ul style="font-size:0.82rem; color:#475569; margin:0; padding-left:1.2rem; line-height:1.8;">
+          <li>{{ _('CounterStrikeSharp (CSS) requires') }} <strong>Metamod:Source</strong> {{ _('\u2014 install it first.') }}</li>
+          <li>{{ _('Installation uses the') }} <code>with-runtime</code> {{ _('package, no separate .NET runtime needed.') }}</li>
+          <li>{{ _('Files are extracted to') }} <code>game/csgo/addons/counterstrikesharp/</code>{{ _('.') }}</li>
+          <li>{{ _('Restart CS2 container after installation:') }} <code>docker compose restart cs2</code></li>
+          <li>{{ _('CSS plugins go under') }} <code>addons/counterstrikesharp/plugins/</code>{{ _('.') }}</li>
+          <li>{{ _('Reinstalling over an existing installation is supported (for updates).') }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sağ: Kurulum Paneli -->
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-bolt"></i>{{ _('Installation') }}</h6>
+      </div>
+      <div class="card-body-custom d-flex flex-column gap-3">
+
+        <!-- Tarayıcıdan İndir & Kur -->
+        <div class="p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
+          <div style="font-weight:600; font-size:0.88rem; color:#1e293b; margin-bottom:0.4rem;">
+            <i class="fa-solid fa-rocket" style="color:#6366f1;"></i>
+            {% if installed %}{{ _('Reinstall / Update') }}{% else %}{{ _('Download & Install') }}{% endif %}
+          </div>
+          <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.75rem;">
+            {{ _('Your browser downloads from GitHub, the panel installs.') }} <strong>with-runtime</strong> {{ _('package is selected.') }}
+          </p>
+
+          <div id="installProgress" style="display:none; margin-bottom:0.75rem;">
+            <div style="font-size:0.78rem; color:#6366f1; margin-bottom:0.4rem;" id="installStatus">{{ _('Preparing...') }}</div>
+            <div style="background:#e2e8f0; border-radius:6px; height:8px; overflow:hidden;">
+              <div id="installBar" style="height:100%; width:0%; background:#6366f1; transition:width .3s;"></div>
+            </div>
+          </div>
+
+          <button id="browserInstallBtn" class="btn-action apply w-100" style="justify-content:center; padding:0.6rem;"
+                  onclick="browserInstall()" {% if not metamod_ok %}disabled title="{{ _('Install Metamod first') }}"{% endif %}>
+            <i class="fa-solid fa-download"></i>
+            {% if installed %}{{ _('Reinstall / Update') }}{% else %}{{ _('Download & Install') }}{% endif %}
+          </button>
+        </div>
+
+        <!-- Manuel .zip yükleme -->
+        <div class="p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
+          <div style="font-weight:600; font-size:0.88rem; color:#1e293b; margin-bottom:0.4rem;">
+            <i class="fa-solid fa-upload" style="color:#64748b;"></i> {{ _('Manual Upload') }}
+          </div>
+          <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.75rem;">
+            <a href="https://github.com/roflmuffin/CounterStrikeSharp/releases/latest" target="_blank"
+               style="color:#6366f1;">GitHub Releases</a> — {{ _('download') }}
+            <code>counterstrikesharp-with-runtime-linux-*.zip</code> {{ _('and upload it here.') }}
+          </p>
+          <form id="manualUploadForm">
+            <input type="file" name="file" id="manualFile" class="form-control mb-2"
+                   accept=".zip,application/zip" required style="font-size:0.82rem;">
+            <button type="submit" class="btn-action muted w-100" style="justify-content:center; padding:0.55rem;">
+              <i class="fa-solid fa-cloud-arrow-up"></i> {{ _('Upload & Install') }}
+            </button>
+          </form>
+        </div>
+
+        {% if installed %}
+        <div class="p-3 rounded" style="background:#f0fdf4; border:1px solid #bbf7d0;">
+          <div style="font-weight:600; font-size:0.85rem; color:#14532d; margin-bottom:0.3rem;">
+            {{ _('Installation Directory') }}
+          </div>
+          <code style="font-size:0.75rem; color:#166534;">game/csgo/addons/counterstrikesharp/</code>
+          <div style="margin-top:0.4rem; font-size:0.75rem; color:#166534;">
+            <code>addons/counterstrikesharp/plugins/</code> → {{ _('CSS plugins') }}
+          </div>
+        </div>
+        {% endif %}
+
+        <div style="font-size:0.73rem; color:#94a3b8; text-align:center;">
+          <a href="https://github.com/roflmuffin/CounterStrikeSharp" target="_blank" style="color:#6366f1;">GitHub</a>
+          &nbsp;·&nbsp;
+          <a href="https://docs.cssharp.dev" target="_blank" style="color:#6366f1;">{{ _('Documentation') }}</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const INSTALL_UPLOAD_URL = '{{ url_for("css.install_upload") }}';
+const LATEST_API_URL     = '{{ url_for("css.api_latest") }}';
+
+async function browserInstall() {
+  const btn      = document.getElementById('browserInstallBtn');
+  const progress = document.getElementById('installProgress');
+  const statusEl = document.getElementById('installStatus');
+  const bar      = document.getElementById('installBar');
+
+  btn.disabled = true;
+  progress.style.display = '';
+  bar.style.width = '5%';
+  statusEl.textContent = '{{ _("Fetching latest GitHub release URL...") }}';
+
+  // 1. Sunucudan indirme URL'si al
+  let downloadUrl, buildName;
+  try {
+    const r = await fetch(LATEST_API_URL);
+    const data = await r.json();
+    if (!data.url) throw new Error(data.error || '{{ _("Could not get URL") }}');
+    downloadUrl = data.url;
+    buildName   = downloadUrl.split('/').pop();
+  } catch (e) {
+    showResult(false, '{{ _("Could not get URL:") }} ' + e.message);
+    return;
+  }
+
+  statusEl.textContent = '{{ _("Downloading via browser... (this may take a while)") }}';
+  bar.style.width = '20%';
+
+  // 2. Tarayıcı GitHub'dan indirir
+  let blob;
+  try {
+    const resp = await fetch(downloadUrl);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+    const total  = parseInt(resp.headers.get('Content-Length') || '0', 10);
+    const reader = resp.body.getReader();
+    const chunks = [];
+    let received = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      received += value.length;
+      if (total > 0) {
+        const pct = 20 + Math.round((received / total) * 60);
+        bar.style.width = pct + '%';
+        statusEl.textContent = '{{ _("Downloading...") }} ' + Math.round(received / 1024 / 1024 * 10) / 10 + ' MB';
+      }
+    }
+    blob = new Blob(chunks, { type: 'application/zip' });
+  } catch (e) {
+    showResult(false, '{{ _("Download failed:") }} ' + e.message +
+      '<br><small>{{ _("Try the manual upload method.") }}</small>');
+    return;
+  }
+
+  bar.style.width = '85%';
+  statusEl.textContent = '{{ _("Sending to panel...") }}';
+
+  // 3. Panel'e gönder
+  try {
+    const fd = new FormData();
+    fd.append('file', new File([blob], buildName, { type: 'application/zip' }));
+    const resp = await fetch(INSTALL_UPLOAD_URL, { method: 'POST', body: fd });
+    const data = await resp.json();
+    bar.style.width = '100%';
+    if (data.ok) {
+      showResult(true, '{{ _("CounterStrikeSharp installed!") }} <code>' + (data.msg || '') + '</code>' +
+        '<br><small>{{ _("Remember to restart CS2.") }}</small>');
+      setTimeout(() => location.reload(), 3000);
+    } else {
+      showResult(false, data.msg || '{{ _("Installation failed") }}');
+    }
+  } catch (e) {
+    showResult(false, '{{ _("Error sending to server:") }} ' + e.message);
+  }
+}
+
+/* Manuel zip yükleme */
+document.getElementById('manualUploadForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const fileInput = document.getElementById('manualFile');
+  if (!fileInput.files.length) return;
+
+  const btn = this.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> {{ _("Installing...") }}';
+
+  const fd = new FormData();
+  fd.append('file', fileInput.files[0]);
+
+  try {
+    const resp = await fetch(INSTALL_UPLOAD_URL, { method: 'POST', body: fd });
+    const data = await resp.json();
+    if (data.ok) {
+      showResult(true, '{{ _("Installed!") }} <code>' + (data.msg || '') + '</code>' +
+        '<br><small>{{ _("Restart CS2.") }}</small>');
+      setTimeout(() => location.reload(), 3000);
+    } else {
+      showResult(false, data.msg || '{{ _("Installation failed") }}');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> {{ _("Upload & Install") }}';
+    }
+  } catch (e) {
+    showResult(false, '{{ _("Error:") }} ' + e.message);
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> {{ _("Upload & Install") }}';
+  }
+});
+
+function showResult(ok, html) {
+  const progress = document.getElementById('installProgress');
+  const bar      = document.getElementById('installBar');
+  const statusEl = document.getElementById('installStatus');
+  const btn      = document.getElementById('browserInstallBtn');
+
+  progress.style.display = '';
+  bar.style.background = ok ? '#10b981' : '#ef4444';
+  bar.style.width = '100%';
+  statusEl.innerHTML = (ok
+    ? '<i class="fa-solid fa-circle-check" style="color:#10b981;"></i> '
+    : '<i class="fa-solid fa-circle-xmark" style="color:#ef4444;"></i> ') + html;
+
+  if (!ok) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-rotate"></i> {{ _("Retry") }}';
+  }
+}
+
+/* Son sürüm etiketi */
+document.addEventListener('DOMContentLoaded', function () {
+  const el = document.getElementById('latestTagLabel');
+  if (!el) return;
+  fetch(LATEST_API_URL)
+    .then(r => r.json())
+    .then(data => {
+      if (data.tag) {
+        el.innerHTML = '<a href="https://github.com/roflmuffin/CounterStrikeSharp/releases/tag/' +
+          encodeURIComponent(data.tag) + '" target="_blank" style="color:#6366f1; font-weight:600;">' +
+          data.tag + '</a>';
+      } else {
+        el.textContent = data.error || '{{ _("Could not fetch") }}';
+      }
+    })
+    .catch(() => { el.textContent = '{{ _("Connection error") }}'; });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ _('Login') }} — CS2 Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="login-wrapper">
+  <div class="login-card">
+    <div class="login-card-header">
+      <div class="login-logo"><i class="fa-solid fa-crosshairs"></i></div>
+      <h5 class="text-white fw-bold mb-1" style="font-size:1.1rem;">CS2 Panel</h5>
+      <p class="text-white-50 mb-0" style="font-size:0.8rem;">{{ _('Sign in to server management panel') }}</p>
+    </div>
+
+    <div class="login-card-body">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash-bar {{ category }} mb-3">
+              <i class="fa-solid fa-circle-xmark"></i>{{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('auth.login') }}">
+        <div class="mb-3">
+          <label class="form-label-custom">{{ _('Username') }}</label>
+          <div class="input-group">
+            <span class="input-group-text" style="background:#f8fafc; border-color:#e2e8f0; border-radius:9px 0 0 9px;">
+              <i class="fa-solid fa-user" style="color:#94a3b8; font-size:0.8rem;"></i>
+            </span>
+            <input type="text" name="username" class="form-control" placeholder="{{ _('username') }}"
+                   style="border-left:none; border-radius:0 9px 9px 0;" required autofocus>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label-custom">{{ _('Password') }}</label>
+          <div class="input-group">
+            <span class="input-group-text" style="background:#f8fafc; border-color:#e2e8f0; border-radius:9px 0 0 9px;">
+              <i class="fa-solid fa-lock" style="color:#94a3b8; font-size:0.8rem;"></i>
+            </span>
+            <input type="password" name="password" id="loginPass" class="form-control"
+                   placeholder="••••••••" style="border-left:none; border-right:none; border-radius:0;" required>
+            <button type="button" class="input-group-text" id="passToggle"
+                    style="background:#f8fafc; border-color:#e2e8f0; border-radius:0 9px 9px 0; cursor:pointer;">
+              <i class="fa-solid fa-eye" id="passEye" style="color:#94a3b8; font-size:0.8rem;"></i>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="login-btn">
+          <i class="fa-solid fa-right-to-bracket me-2"></i>{{ _('Sign In') }}
+        </button>
+      </form>
+      <div class="text-center mt-3" style="font-size:0.8rem;">
+        <a href="{{ url_for('set_language', lang='en') }}?next={{ request.path }}" style="color:#94a3b8; text-decoration:none;">🇬🇧 EN</a>
+        <span style="color:#475569; margin:0 0.4rem;">|</span>
+        <a href="{{ url_for('set_language', lang='tr') }}?next={{ request.path }}" style="color:#94a3b8; text-decoration:none;">🇹🇷 TR</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const passToggle = document.getElementById('passToggle');
+  const loginPass  = document.getElementById('loginPass');
+  const passEye    = document.getElementById('passEye');
+  if (passToggle) {
+    passToggle.addEventListener('click', () => {
+      const isPass = loginPass.type === 'password';
+      loginPass.type = isPass ? 'text' : 'password';
+      passEye.className = isPass ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+      passEye.style.color = '#94a3b8';
+    });
+  }
+</script>
+</body>
+</html>

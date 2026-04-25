@@ -1,0 +1,14 @@
+# Code owners for OpenCS2
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+* @enesbakis
+
+# CI/CD workflows
+.github/workflows/ @enesbakis
+
+# Panel application
+panel/ @enesbakis
+
+# Translations — community translators can be added here
+panel/app/translations/ @enesbakis

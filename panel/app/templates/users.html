@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Users') }}{% endblock %}
+{% block page_title %}{{ _('Panel Users') }}{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+
+  <!-- User List -->
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-users"></i>{{ _('User List') }}</h6>
+        <span class="badge-neutral">{{ users|length }} {{ _('user(s)') }}</span>
+      </div>
+      <div class="card-body-custom p-0">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{{ _('Username') }}</th>
+              <th>{{ _('Created') }}</th>
+              <th>{{ _('Actions') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+            <tr>
+              <td><span class="badge-neutral">{{ u.id }}</span></td>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div style="width:28px; height:28px; background:linear-gradient(135deg,#6366f1,#8b5cf6); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:#fff; font-weight:700; flex-shrink:0;">
+                    {{ u.username[0]|upper }}
+                  </div>
+                  <strong>{{ u.username }}</strong>
+                  {% if u.id == current_user.id %}
+                    <span style="font-size:0.68rem; background:#e0f2fe; color:#0c4a6e; padding:0.1rem 0.4rem; border-radius:4px; font-weight:600;">{{ _('You') }}</span>
+                  {% endif %}
+                </div>
+              </td>
+              <td style="color:#94a3b8; font-size:0.78rem;">
+                {{ u.created_at[:10] if u.created_at else '—' }}
+              </td>
+              <td>
+                <button class="btn-action muted"
+                        data-bs-toggle="modal" data-bs-target="#changePassModal"
+                        data-uid="{{ u.id }}" data-uname="{{ u.username }}">
+                  <i class="fa-solid fa-key"></i> {{ _('Password') }}
+                </button>
+                {% if u.id != current_user.id %}
+                <form method="POST" action="{{ url_for('users.delete', user_id=u.id) }}"
+                      class="d-inline"
+                      data-confirm="{{ _('Delete %(name)s?', name=u.username) }}"
+                      onsubmit="return confirm(this.dataset.confirm)">
+                  <button type="submit" class="btn-action ban">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create User -->
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-user-plus"></i>{{ _('New User') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <form method="POST" action="{{ url_for('users.create') }}">
+          <div class="mb-3">
+            <label class="form-label-custom">{{ _('Username') }}</label>
+            <input type="text" name="username" class="form-control" placeholder="{{ _('username') }}"
+                   minlength="3" required>
+            <div style="font-size:0.72rem; color:#94a3b8; margin-top:0.25rem;">
+              {{ _('Letters, numbers, _ and - allowed') }}
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label-custom">{{ _('Password') }}</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••"
+                   minlength="6" required>
+            <div style="font-size:0.72rem; color:#94a3b8; margin-top:0.25rem;">
+              {{ _('At least 6 characters') }}
+            </div>
+          </div>
+          <button type="submit" class="btn-action apply w-100" style="justify-content:center; padding:0.5rem;">
+            <i class="fa-solid fa-plus"></i> {{ _('Create User') }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePassModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:14px; border:1px solid #e2e8f0;">
+      <div class="modal-header" style="border-bottom:1px solid #f1f5f9;">
+        <h5 class="modal-title" style="font-size:0.9rem; font-weight:700;">
+          <i class="fa-solid fa-key me-2" style="color:#6366f1;"></i>
+          {{ _('Change Password:') }} <span id="cpModalName"></span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" id="cpForm">
+        <div class="modal-body">
+          <label class="form-label-custom">{{ _('New Password') }}</label>
+          <input type="password" name="new_password" class="form-control"
+                 placeholder="••••••••" minlength="6" required>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid #f1f5f9;">
+          <button type="button" class="btn-action muted" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+          <button type="submit" class="btn-action apply">
+            <i class="fa-solid fa-check"></i> {{ _('Change') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const cpModal = document.getElementById('changePassModal');
+  if (cpModal) {
+    cpModal.addEventListener('show.bs.modal', e => {
+      const btn = e.relatedTarget;
+      document.getElementById('cpModalName').textContent = btn.dataset.uname;
+      document.getElementById('cpForm').action = '/users/change_password/' + btn.dataset.uid;
+    });
+  }
+</script>
+{% endblock %}

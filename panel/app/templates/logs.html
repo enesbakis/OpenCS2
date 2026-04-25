@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Logs') }}{% endblock %}
+{% block page_title %}{{ _('Server Logs') }}{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header-custom">
+    <h6 class="card-title"><i class="fa-solid fa-terminal"></i>{{ _('Log File') }}</h6>
+    <div class="d-flex align-items-center gap-2">
+      <form method="GET" action="{{ url_for('server.logs') }}" class="d-flex align-items-center gap-2">
+        <select name="log_file" class="form-select form-select-sm" style="width:auto; font-size:0.8rem;"
+                onchange="this.form.submit()">
+          {% for f in log_files %}
+          <option value="{{ f }}" {% if f == selected_log %}selected{% endif %}>{{ f }}</option>
+          {% endfor %}
+        </select>
+      </form>
+      <span class="badge-neutral">{{ _('Last 300 lines') }}</span>
+    </div>
+  </div>
+  <div class="card-body-custom" style="padding:1rem;">
+    {% if log_content %}
+    <pre class="log-viewer" id="logContent">{{ log_content }}</pre>
+    {% else %}
+    <div class="empty-state">
+      <i class="fa-solid fa-file-lines"></i>
+      <p>{{ _('Log file is empty or not found') }}</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const logContent = document.getElementById('logContent');
+  if (logContent) logContent.scrollTop = logContent.scrollHeight;
+</script>
+{% endblock %}

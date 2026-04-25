@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% block title %}{{ plugin.name }} — {{ _('Edit Plugin') }}{% endblock %}
+{% block page_title %}{{ _('Plugin:') }} {{ plugin.name }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+  .CodeMirror { height: calc(100vh - 320px); min-height: 300px; border-radius: 0 0 8px 8px; font-size: 0.82rem; }
+  .file-tab { display:inline-flex; align-items:center; gap:0.35rem; padding:0.3rem 0.7rem; border-radius:6px 6px 0 0;
+    font-size:0.78rem; font-weight:500; cursor:pointer; border:1px solid #e2e8f0; border-bottom:none;
+    background:#f8fafc; color:#475569; text-decoration:none; transition:all .15s; }
+  .file-tab:hover { background:#e2e8f0; color:#1e293b; }
+  .file-tab.active { background:#fff; color:#6366f1; border-color:#c7d2fe; }
+  [data-bs-theme="dark"] .file-tab { background:#1e293b; color:#94a3b8; border-color:#334155; }
+  [data-bs-theme="dark"] .file-tab:hover { background:#334155; color:#e2e8f0; }
+  [data-bs-theme="dark"] .file-tab.active { background:#0f172a; color:#818cf8; border-color:#4f46e5; }
+  .editor-toolbar { display:flex; align-items:center; justify-content:space-between; padding:0.5rem 0.75rem;
+    background:#f1f5f9; border:1px solid #e2e8f0; border-bottom:none; border-radius:8px 8px 0 0; }
+  [data-bs-theme="dark"] .editor-toolbar { background:#1e293b; border-color:#334155; }
+  #saveStatus { font-size:0.75rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+
+  <!-- Editor -->
+  <div class="col-lg-8">
+
+    <!-- Geri -->
+    <div class="mb-2">
+      <a href="{{ url_for('plugins.index') }}" class="btn-action muted" style="font-size:0.8rem;">
+        <i class="fa-solid fa-arrow-left"></i> {{ _('Back to Plugins') }}
+      </a>
+    </div>
+
+    <div class="card" style="overflow:visible;">
+      <div class="card-body-custom p-0">
+
+        {% if plugin.config_files %}
+        <!-- Sekme başlıkları -->
+        <div style="padding:0.6rem 0.75rem 0; display:flex; flex-wrap:wrap; gap:0.3rem; border-bottom:1px solid #e2e8f0;">
+          {% for cf in plugin.config_files %}
+          <a href="{{ url_for('plugins.edit', plugin_name=plugin.name, file=cf) }}"
+             class="file-tab {% if cf == current_file %}active{% endif %}">
+            <i class="fa-solid fa-file-code" style="font-size:0.7rem;"></i>
+            {{ cf.split('/')[-1] }}
+          </a>
+          {% endfor %}
+        </div>
+
+        {% if current_file and content is not none %}
+        <!-- Araç çubuğu -->
+        <div class="editor-toolbar">
+          <span style="font-size:0.78rem; color:#64748b; font-family:monospace;">{{ current_file }}</span>
+          <div class="d-flex align-items-center gap-2">
+            <span id="saveStatus" style="color:#10b981;"></span>
+            <button id="saveBtn" class="btn-action apply" onclick="saveFile()"
+                    style="font-size:0.78rem; padding:0.3rem 0.7rem;">
+              <i class="fa-solid fa-floppy-disk"></i> {{ _('Save') }}
+            </button>
+          </div>
+        </div>
+
+        <!-- CodeMirror -->
+        <textarea id="editor">{{ content }}</textarea>
+
+        {% else %}
+        <div class="empty-state" style="padding:3rem;">
+          <i class="fa-solid fa-file-circle-exclamation"></i>
+          <p>{{ _('File could not be read or not selected') }}</p>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state" style="padding:3rem;">
+          <i class="fa-solid fa-file-circle-xmark"></i>
+          <p>{{ _('No editable config files in this plugin') }}</p>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Sağ: Bilgi + Dosyalar -->
+  <div class="col-lg-4">
+
+    <!-- Eklenti Bilgisi -->
+    <div class="card mb-3">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-circle-info"></i>{{ _('Plugin Info') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <div class="d-flex flex-column gap-2">
+          <div class="d-flex justify-content-between" style="font-size:0.82rem;">
+            <span style="color:#64748b;">{{ _('Status') }}</span>
+            {% if plugin.enabled %}
+            <span class="badge-status active">{{ _('Active') }}</span>
+            {% else %}
+            <span class="badge-status inactive">{{ _('Inactive') }}</span>
+            {% endif %}
+          </div>
+          <div class="d-flex justify-content-between" style="font-size:0.82rem;">
+            <span style="color:#64748b;">{{ _('Name') }}</span>
+            <strong>{{ plugin.name }}</strong>
+          </div>
+          <div class="d-flex justify-content-between" style="font-size:0.82rem;">
+            <span style="color:#64748b;">{{ _('File count') }}</span>
+            <span>{{ plugin.file_count }}</span>
+          </div>
+          <div class="d-flex justify-content-between" style="font-size:0.82rem;">
+            <span style="color:#64748b;">{{ _('Size') }}</span>
+            <span>{{ plugin.size_kb }} KB</span>
+          </div>
+          <div class="d-flex justify-content-between" style="font-size:0.82rem;">
+            <span style="color:#64748b;">{{ _('Config files') }}</span>
+            <span>{{ plugin.config_files|length }}</span>
+          </div>
+        </div>
+
+        <div class="mt-3" style="font-size:0.75rem; color:#94a3b8;">
+          <code style="word-break:break-all;">game/csgo/addons/{{ plugin.name }}/</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tüm Config Dosyaları -->
+    {% if plugin.config_files %}
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-file-code"></i>{{ _('Config Files') }}</h6>
+      </div>
+      <div class="card-body-custom" style="padding:0.5rem;">
+        {% for cf in plugin.config_files %}
+        <a href="{{ url_for('plugins.edit', plugin_name=plugin.name, file=cf) }}"
+           class="d-flex align-items-center gap-2 px-2 py-2 rounded {% if cf == current_file %}active{% endif %}"
+           style="text-decoration:none; font-size:0.8rem; color:{% if cf == current_file %}#6366f1{% else %}#475569{% endif %};
+                  background:{% if cf == current_file %}#eef2ff{% else %}transparent{% endif %};
+                  transition:all .15s;">
+          <i class="fa-solid fa-file-lines" style="font-size:0.72rem; min-width:14px;"></i>
+          <span style="word-break:break-all;">{{ cf }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Toggle Aktif/Deaktif -->
+    <div class="card mt-3">
+      <div class="card-body-custom">
+        <div style="font-weight:600; font-size:0.85rem; margin-bottom:0.4rem;">
+          <i class="fa-solid fa-power-off"></i> {{ _('Plugin Status') }}
+        </div>
+        <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.75rem;">
+          {{ _('Disabled plugins stay installed but are not loaded by CS2.') }}
+        </p>
+        <form method="POST" action="{{ url_for('plugins.toggle', plugin_name=plugin.name) }}">
+          {% if plugin.enabled %}
+          <button type="submit" class="btn-action warning w-100" style="justify-content:center; padding:0.5rem;">
+            <i class="fa-solid fa-toggle-on"></i> {{ _('Disable') }}
+          </button>
+          {% else %}
+          <button type="submit" class="btn-action green w-100" style="justify-content:center; padding:0.5rem;">
+            <i class="fa-solid fa-toggle-off"></i> {{ _('Enable') }}
+          </button>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+
+    <!-- Sil -->
+    <div class="card mt-3" style="border-color:#fecaca;">
+      <div class="card-body-custom">
+        <div style="font-weight:600; font-size:0.85rem; color:#991b1b; margin-bottom:0.5rem;">
+          <i class="fa-solid fa-triangle-exclamation"></i> {{ _('Danger Zone') }}
+        </div>
+        <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.75rem;">
+          {{ _('Delete the plugin completely. This action cannot be undone.') }}
+        </p>
+        {% set confirm_del = _('Delete %(name)s and all its files?', name=plugin.name) %}
+        <form method="POST" action="{{ url_for('plugins.delete', plugin_name=plugin.name) }}"
+              onsubmit="return confirm('{{ confirm_del }}')">
+          <button type="submit" class="btn-action ban w-100" style="justify-content:center; padding:0.5rem;">
+            <i class="fa-solid fa-trash"></i> {{ _('Delete Plugin') }}
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{% if current_file and content is not none %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script>
+const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+  lineNumbers: true,
+  matchBrackets: true,
+  autoCloseBrackets: true,
+  theme: isDark ? 'dracula' : 'default',
+  indentUnit: 4,
+  tabSize: 4,
+  lineWrapping: true,
+});
+
+// Dark mode sync
+const darkToggle = document.getElementById('darkToggle');
+if (darkToggle) {
+  darkToggle.addEventListener('click', () => {
+    const nowDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+    editor.setOption('theme', nowDark ? 'dracula' : 'default');
+  });
+}
+
+// Ctrl+S kaydet
+editor.on('keydown', function(cm, e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    saveFile();
+  }
+});
+
+let saveTimer;
+function saveFile() {
+  const btn = document.getElementById('saveBtn');
+  const status = document.getElementById('saveStatus');
+  btn.disabled = true;
+btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> {{ _("Saving...") }}';
+  status.textContent = '';
+
+  const fd = new FormData();
+  fd.append('file', '{{ current_file }}');
+  fd.append('content', editor.getValue());
+
+  fetch('{{ url_for("plugins.save_config", plugin_name=plugin.name) }}', {
+    method: 'POST',
+    body: fd,
+  })
+  .then(r => r.json())
+  .then(data => {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> {{ _("Save") }}';
+    if (data.ok) {
+      status.textContent = '\u2713 {{ _("Saved") }}';
+      status.style.color = '#10b981';
+    } else {
+      status.textContent = '\u2717 ' + (data.msg || '{{ _("Error") }}');
+      status.style.color = '#ef4444';
+    }
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => { status.textContent = ''; }, 3000);
+  })
+  .catch(e => {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> {{ _("Save") }}';
+    status.textContent = '\u2717 {{ _("Connection error") }}';
+    status.style.color = '#ef4444';
+  });
+}
+</script>
+{% endif %}
+{% endblock %}

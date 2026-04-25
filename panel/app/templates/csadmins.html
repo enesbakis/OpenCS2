@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% block title %}{{ _('CS Admin Management') }}{% endblock %}
+{% block page_title %}{{ _('CS Admin Management') }}{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+
+  <!-- Admin Listesi -->
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-shield-halved"></i>{{ _('Admins') }}</h6>
+        <span class="badge-neutral">{{ admins|length }}</span>
+      </div>
+      <div class="card-body-custom">
+        {% if admins %}
+        <div class="d-flex flex-column gap-2">
+          {% for name, admin in admins.items() %}
+          <div class="plugin-row">
+            <div class="plugin-icon">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div class="plugin-info">
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span class="plugin-name">{{ name }}</span>
+                {% if '@css/root' in (admin.flags or []) %}
+                  <span class="badge-status active">Root</span>
+                {% endif %}
+                {% for g in (admin.groups or []) %}
+                  <span class="badge" style="background:#e0e7ff; color:#3730a3; font-size:0.7rem; padding:0.15rem 0.5rem; border-radius:4px;">{{ g }}</span>
+                {% endfor %}
+              </div>
+              <div class="plugin-meta">
+                <code style="font-size:0.72rem;">{{ admin.identity }}</code>
+                &nbsp;·&nbsp; Immunity: {{ admin.immunity or 0 }}
+                {% if admin.flags %}
+                  &nbsp;·&nbsp; <span style="color:#6366f1;">{{ _('%(n)s permissions', n=admin.flags|length) }}</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="plugin-actions">
+              <a href="{{ url_for('csadmins.edit', admin_name=name) }}" class="btn-action apply" title="{{ _('Edit') }}">
+                <i class="fa-solid fa-pen"></i>
+              </a>
+              {% set confirm_del = _('Delete %(name)s?', name=name) %}
+              <form method="POST" action="{{ url_for('csadmins.delete', admin_name=name) }}"
+                    onsubmit="return confirm('{{ confirm_del }}')">
+                <button type="submit" class="btn-action ban" title="{{ _('Delete') }}">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <i class="fa-solid fa-user-shield"></i>
+          <p>{{ _('No admins added yet') }}</p>
+          <p style="font-size:0.78rem; color:#94a3b8;">{{ _('Add a new admin from the right panel') }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Grup Listesi -->
+    <div class="card mt-3">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-layer-group"></i>{{ _('Admin Groups') }}</h6>
+        <span class="badge-neutral">{{ groups|length }}</span>
+      </div>
+      <div class="card-body-custom">
+        {% if groups %}
+        <div class="d-flex flex-column gap-2">
+          {% for gname, gdata in groups.items() %}
+          <div class="plugin-row">
+            <div class="plugin-icon">
+              <i class="fa-solid fa-users-gear"></i>
+            </div>
+            <div class="plugin-info">
+              <div class="d-flex align-items-center gap-2">
+                <span class="plugin-name">{{ gname }}</span>
+              </div>
+              <div class="plugin-meta">
+                Immunity: {{ gdata.immunity or 0 }}
+                {% if gdata.flags %}
+                  &nbsp;·&nbsp; <span style="color:#6366f1;">{{ _('%(n)s permissions', n=gdata.flags|length) }}</span>:
+                  {% for f in (gdata.flags or []) %}
+                    <code style="font-size:0.68rem; background:#f1f5f9; padding:0.1rem 0.3rem; border-radius:3px;">{{ f.split('/')[-1] }}</code>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+            <div class="plugin-actions">
+              {% set confirm_grp = _('Delete group %(name)s?', name=gname) %}
+              <form method="POST" action="{{ url_for('csadmins.delete_group', group_name=gname) }}"
+                    onsubmit="return confirm('{{ confirm_grp }}')">
+                <button type="submit" class="btn-action ban" title="{{ _('Delete') }}">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <i class="fa-solid fa-layer-group"></i>
+          <p>{{ _('No groups created yet') }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Sağ Panel: Admin Ekle + Grup Ekle -->
+  <div class="col-lg-4 d-flex flex-column gap-3">
+
+    <!-- Admin Ekle -->
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-user-plus"></i>{{ _('Add Admin') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <form method="POST" action="{{ url_for('csadmins.add') }}">
+
+          <label class="form-label-custom">{{ _('Display Name') }}</label>
+          <input type="text" name="name" class="form-control mb-3" required
+                 maxlength="64" placeholder="ör: SuperAdmin"
+                 style="font-size:0.85rem;">
+
+          <label class="form-label-custom">Steam ID</label>
+          <input type="text" name="identity" class="form-control mb-1" required
+                 placeholder="76561198000000000"
+                 pattern="\d{17}|STEAM_[0-5]:[01]:\d+"
+                 style="font-size:0.85rem;">
+          <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:0.75rem;">
+            {{ _('Steam64 (17 digits) or STEAM_X:X:X') }}
+          </div>
+
+          <label class="form-label-custom">Immunity <span style="color:#94a3b8; font-weight:400;">(0–255)</span></label>
+          <input type="number" name="immunity" class="form-control mb-3"
+                 value="0" min="0" max="255" style="font-size:0.85rem;">
+
+          <label class="form-label-custom">{{ _('Permissions') }}</label>
+            {% for flag, label in css_flags %}
+            <label class="d-flex align-items-center gap-2" style="font-size:0.82rem; cursor:pointer;">
+              <input type="checkbox" name="flags" value="{{ flag }}"
+                     {% if flag == '@css/root' %}onclick="handleRootCheck(this)"{% endif %}>
+              <span>{{ label }}</span>
+              <code style="font-size:0.68rem; color:#6366f1; margin-left:auto;">{{ flag.split('/')[-1] }}</code>
+            </label>
+            {% endfor %}
+          </div>
+
+          {% if groups %}
+          <label class="form-label-custom">{{ _('Groups') }} <span style="color:#94a3b8; font-weight:400;">({{ _('optional') }})</span></label>
+          <div class="d-flex flex-column gap-1 mb-3" style="padding:0.5rem; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+            {% for gname in groups.keys() %}
+            <label class="d-flex align-items-center gap-2" style="font-size:0.82rem; cursor:pointer;">
+              <input type="checkbox" name="groups" value="{{ gname }}">
+              <span>{{ gname }}</span>
+            </label>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <button type="submit" class="btn-action apply w-100" style="justify-content:center; padding:0.55rem;">
+            <i class="fa-solid fa-plus"></i> {{ _('Add Admin') }}
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Grup Ekle -->
+    <div class="card">
+      <div class="card-header-custom">
+        <h6 class="card-title"><i class="fa-solid fa-plus-circle"></i>{{ _('Create Group') }}</h6>
+      </div>
+      <div class="card-body-custom">
+        <form method="POST" action="{{ url_for('csadmins.add_group') }}">
+
+          <label class="form-label-custom">{{ _('Group Name') }}</label>
+          <div class="input-group mb-3" style="font-size:0.85rem;">
+            <span class="input-group-text" style="background:#f1f5f9; font-size:0.85rem; color:#64748b;">#</span>
+            <input type="text" name="group_name" class="form-control" required
+                   placeholder="css/admin" style="font-size:0.85rem;">
+          </div>
+
+          <label class="form-label-custom">Immunity</label>
+          <input type="number" name="group_immunity" class="form-control mb-3"
+                 value="100" min="0" max="255" style="font-size:0.85rem;">
+
+          <label class="form-label-custom">{{ _('Permissions') }}</label>
+          <div class="d-flex flex-column gap-1 mb-3" style="max-height:200px; overflow-y:auto; padding:0.5rem; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+            {% for flag, label in css_flags %}
+            <label class="d-flex align-items-center gap-2" style="font-size:0.82rem; cursor:pointer;">
+              <input type="checkbox" name="group_flags" value="{{ flag }}">
+              <span>{{ label }}</span>
+              <code style="font-size:0.68rem; color:#6366f1; margin-left:auto;">{{ flag.split('/')[-1] }}</code>
+            </label>
+            {% endfor %}
+          </div>
+
+          <button type="submit" class="btn-action green w-100" style="justify-content:center; padding:0.55rem;">
+            <i class="fa-solid fa-layer-group"></i> {{ _('Create Group') }}
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function handleRootCheck(checkbox) {
+  // If root is checked, check all flags
+  const form = checkbox.closest('form');
+  form.querySelectorAll('input[name="flags"]').forEach(cb => {
+    cb.checked = checkbox.checked;
+  });
+}
+</script>
+{% endblock %}

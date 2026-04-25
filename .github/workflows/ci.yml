@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint (flake8)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: panel/requirements.txt
+
+      - name: Install dependencies
+        run: pip install flake8 -r panel/requirements.txt
+
+      - name: Run flake8
+        run: flake8 panel/ --max-line-length=120 --exclude=panel/app/translations
+
+  import-test:
+    name: Import test
+    runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ci-test-secret-key
+      DATABASE: /tmp/test-panel.db
+      CS2_DATA_PATH: /tmp/cs2-data
+      RCON_HOST: localhost
+      RCON_PORT: "27015"
+      RCON_PASSWORD: ""
+      SERVER_IP: 127.0.0.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: panel/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r panel/requirements.txt
+
+      - name: Compile translations
+        working-directory: panel
+        run: pybabel compile -d app/translations
+
+      - name: Test app import and factory
+        working-directory: panel
+        run: python -c "from app import create_app; app = create_app(); print('OK')"
