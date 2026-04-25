@@ -4,4 +4,4 @@ flask-babel==4.0.0
 werkzeug==3.0.3
 python-dotenv==1.0.1
 gunicorn==22.0.0
-psutil==5.9.8
+psutil==7.2.2
