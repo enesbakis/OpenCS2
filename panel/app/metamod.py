@@ -56,7 +56,7 @@ def _get_latest_url() -> tuple[str | None, str | None, str | None]:
             final_url = resp.url  # may redirect to real versioned filename
         build = final_url.split('/')[-1]
         return final_url, build, None
-    except Exception as e1:
+    except Exception:
         pass
 
     # Strategy 2: scrape directory listing

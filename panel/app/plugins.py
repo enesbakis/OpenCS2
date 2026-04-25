@@ -421,7 +421,7 @@ def delete(plugin_name: str):
         flash(_('System plugin cannot be deleted.'), 'danger')
         return redirect(url_for('plugins.index'))
 
-    path, _ = _find_plugin_path(plugin_name)
+    path, _enabled = _find_plugin_path(plugin_name)
     if path is None:
         flash(_('Plugin not found.'), 'warning')
         return redirect(url_for('plugins.index'))

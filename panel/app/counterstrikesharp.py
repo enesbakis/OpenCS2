@@ -5,14 +5,14 @@ import tempfile
 import urllib.request
 import zipfile
 
-from flask import Blueprint, render_template, redirect, url_for, flash, current_app, request, jsonify
+from flask import Blueprint, render_template, current_app, request, jsonify
 from flask_login import login_required
 from werkzeug.utils import secure_filename
 
 css_bp = Blueprint('css', __name__, url_prefix='/counterstrikesharp')
 
-_GH_API_URL    = 'https://api.github.com/repos/roflmuffin/CounterStrikeSharp/releases/latest'
-_VERSION_FILE  = 'addons/.css_installed_version'
+_GH_API_URL = 'https://api.github.com/repos/roflmuffin/CounterStrikeSharp/releases/latest'
+_VERSION_FILE = 'addons/.css_installed_version'
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────

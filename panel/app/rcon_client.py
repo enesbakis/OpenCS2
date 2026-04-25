@@ -213,7 +213,8 @@ def parse_status(output: str) -> dict:
             # Real player: has ip:port address and numeric id
             # e.g.: "   2    01:47    9    0     active 786432 78.190.129.63:8333 'Ergenekondom'"
             m = re.match(
-                r"^\s*(\d+)\s+(\S+)\s+(\d+)\s+(\d+)\s+(\S+)\s+\d+\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d+)\s+'(.*)'\s*$",
+                r"^\s*(\d+)\s+(\S+)\s+(\d+)\s+(\d+)\s+(\S+)"
+                r"\s+\d+\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d+)\s+'(.*)'\s*$",
                 line,
             )
             if m:
