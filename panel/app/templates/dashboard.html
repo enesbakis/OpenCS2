@@ -110,6 +110,7 @@
       </div>
       <div class="card-body-custom">
         <form method="POST" action="{{ url_for('dashboard.set_password') }}" class="d-flex gap-2">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <input type="text" name="sv_password" class="form-control"
                  value="{{ server.sv_password }}" placeholder="{{ _('Leave empty for no password') }}">
           <button type="submit" class="btn-action apply" style="white-space:nowrap;">
@@ -129,6 +130,7 @@
       </div>
       <div class="card-body-custom">
         <form method="POST" action="{{ url_for('dashboard.change_map') }}" class="d-flex gap-2">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <select name="map_name" class="form-select">
             {% for m in maps %}
               <option value="{{ m }}" {% if m == server.map %}selected{% endif %}>{{ m }}</option>
@@ -176,6 +178,7 @@
             </td>
             <td>
               <form method="POST" action="{{ url_for('dashboard.player_action') }}" class="d-inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="userid" value="{{ p.userid }}">
                 <input type="hidden" name="playername" value="{{ p.name }}">
                 <button type="submit" name="action" value="kick" class="btn-action kick">
@@ -239,6 +242,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <form method="POST" action="{{ url_for('dashboard.player_action') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="modal-body">
           <input type="hidden" name="action" value="ban">
           <input type="hidden" name="userid" id="banUserId">

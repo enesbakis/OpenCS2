@@ -1,3 +1,8 @@
+function csrfToken() {
+  const m = document.querySelector('meta[name="csrf-token"]');
+  return m ? m.getAttribute('content') : '';
+}
+
 /* ── Dashboard auto-refresh (every 15 seconds) ─────────────────────────── */
 document.addEventListener('DOMContentLoaded', function () {
   if (document.getElementById('playerTbody') || document.getElementById('livePlayerCount')) {
@@ -79,6 +84,7 @@ function renderPlayers(players) {
       '<td>' + pingBadge + '</td>' +
       '<td>' +
         '<form method="POST" action="/player_action" class="d-inline">' +
+          '<input type="hidden" name="csrf_token" value="' + escHtml(csrfToken()) + '">' +
           '<input type="hidden" name="userid" value="' + escHtml(p.userid) + '">' +
           '<input type="hidden" name="playername" value="' + escHtml(p.name) + '">' +
           '<button type="submit" name="action" value="kick" class="btn-action kick"><i class="fa-solid fa-shoe-prints"></i> Kick</button>' +

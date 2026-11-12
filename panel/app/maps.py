@@ -11,6 +11,7 @@ from flask_login import login_required, current_user
 from flask_babel import _
 from werkzeug.utils import secure_filename
 from .models import get_state, set_state, log_action
+from .security import role_required
 
 maps_bp = Blueprint('maps', __name__, url_prefix='/maps')
 
@@ -86,22 +87,9 @@ def _set_quick_maps(db: str, maps_list: list[str]) -> None:
 
 # ── Routes ─────────────────────────────────────────────────────────────────────
 
-@maps_bp.route('/debug')
-@login_required
-def debug():
-    maps_dir = _maps_dir()
-    return {
-        'cs2_data_path': current_app.config['CS2_DATA_PATH'],
-        'maps_dir': maps_dir,
-        'maps_dir_exists': os.path.isdir(maps_dir),
-        'maps_dir_contents': os.listdir(maps_dir)[:30] if os.path.isdir(maps_dir) else [],
-        'default_maps_count': len(_CS2_DEFAULT_MAPS),
-        'list_maps_result': _list_maps(),
-    }
-
-
 @maps_bp.route('/')
 @login_required
+@role_required('viewer')
 def index():
     db = current_app.config['DATABASE']
     return render_template(
@@ -117,6 +105,7 @@ def index():
 
 @maps_bp.route('/upload', methods=['POST'])
 @login_required
+@role_required('admin')
 def upload():
     if 'map_file' not in request.files or not request.files['map_file'].filename:
         flash(_('No file selected.'), 'danger')
@@ -178,6 +167,7 @@ def upload():
 
 @maps_bp.route('/delete/<map_name>', methods=['POST'])
 @login_required
+@role_required('admin')
 def delete_map(map_name):
     if not re.match(r'^[a-zA-Z0-9_\-]+$', map_name):
         flash(_('Invalid map name.'), 'danger')
@@ -212,6 +202,7 @@ def delete_map(map_name):
 
 @maps_bp.route('/mapcycle/toggle', methods=['POST'])
 @login_required
+@role_required('operator')
 def toggle_mapcycle():
     map_name = request.form.get('map_name', '').strip()
     if not re.match(r'^[a-zA-Z0-9_\-]+$', map_name):
@@ -234,6 +225,7 @@ def toggle_mapcycle():
 
 @maps_bp.route('/quickmap/toggle', methods=['POST'])
 @login_required
+@role_required('operator')
 def toggle_quickmap():
     map_name = request.form.get('map_name', '').strip()
     if not re.match(r'^[a-zA-Z0-9_\-]+$', map_name):

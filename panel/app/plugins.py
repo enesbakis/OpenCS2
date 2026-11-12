@@ -14,6 +14,7 @@ from flask_babel import _
 from werkzeug.utils import secure_filename
 
 from .models import log_action
+from .security import role_required, is_within_directory
 plugins_bp = Blueprint('plugins', __name__, url_prefix='/plugins')
 
 # Metamod system directories — never show/delete these
@@ -30,7 +31,8 @@ def _addons_dir() -> str:
 
 
 def _safe_plugin_name(name: str) -> bool:
-    return bool(re.match(r'^[a-zA-Z0-9_\-]+$', name))
+    # fullmatch: '$' in re.match would also accept a trailing newline.
+    return bool(re.fullmatch(r'[a-zA-Z0-9_\-]+', name))
 
 
 def _css_plugins_dir() -> str:
@@ -166,7 +168,11 @@ def _extract_to_tmp(src: str) -> tuple[str | None, str]:
                     norm = os.path.normpath(m.name)
                     if norm.startswith('..') or os.path.isabs(norm):
                         continue
-                    tar.extract(m, path=tmp_dir)
+                    # filter='data' rejects links pointing outside tmp_dir,
+                    # device files and unsafe permissions. Without it a
+                    # symlink to e.g. /etc/passwd would later be followed by
+                    # copytree() and copied into the plugins directory.
+                    tar.extract(m, path=tmp_dir, filter='data')
         else:
             with zipfile.ZipFile(src) as zf:
                 for member in zf.namelist():
@@ -228,33 +234,11 @@ def _install_from_tmp(tmp_dir: str, addons_dir: str, plugin_name: str) -> str:
     return plugin_dir
 
 
-def _extract_archive(src: str, dest_dir: str) -> tuple[bool, str]:
-    """Extract zip or tar.gz into dest_dir safely (legacy helper)."""
-    os.makedirs(dest_dir, exist_ok=True)
-    try:
-        if src.endswith('.tar.gz') or src.endswith('.tgz'):
-            with tarfile.open(src, 'r:gz') as tar:
-                for m in tar.getmembers():
-                    norm = os.path.normpath(m.name)
-                    if norm.startswith('..') or os.path.isabs(norm):
-                        continue
-                    tar.extract(m, path=dest_dir)
-        else:
-            with zipfile.ZipFile(src) as zf:
-                for member in zf.namelist():
-                    norm = os.path.normpath(member)
-                    if norm.startswith('..') or os.path.isabs(norm):
-                        continue
-                    zf.extract(member, dest_dir)
-        return True, ''
-    except Exception as e:
-        return False, str(e)
-
-
 # ── Routes ─────────────────────────────────────────────────────────────────────
 
 @plugins_bp.route('/')
 @login_required
+@role_required('viewer')
 def index():
     metamod_installed = os.path.isdir(
         os.path.join(_addons_dir(), 'metamod')
@@ -269,6 +253,7 @@ def index():
 
 @plugins_bp.route('/readme/<plugin_name>')
 @login_required
+@role_required('viewer')
 def readme(plugin_name: str):
     if not _safe_plugin_name(plugin_name):
         return jsonify({'error': 'Geçersiz eklenti adı'}), 400
@@ -301,6 +286,7 @@ def readme(plugin_name: str):
 
 @plugins_bp.route('/upload', methods=['POST'])
 @login_required
+@role_required('admin')
 def upload():
     f = request.files.get('plugin_file')
     if not f or not f.filename:
@@ -370,6 +356,7 @@ def upload():
 
 @plugins_bp.route('/toggle/<plugin_name>', methods=['POST'])
 @login_required
+@role_required('admin')
 def toggle(plugin_name: str):
     if not _safe_plugin_name(plugin_name):
         flash(_('Invalid plugin name.'), 'danger')
@@ -412,6 +399,7 @@ def toggle(plugin_name: str):
 
 @plugins_bp.route('/delete/<plugin_name>', methods=['POST'])
 @login_required
+@role_required('admin')
 def delete(plugin_name: str):
     if not _safe_plugin_name(plugin_name):
         flash(_('Invalid plugin name.'), 'danger')
@@ -446,6 +434,7 @@ def delete(plugin_name: str):
 
 @plugins_bp.route('/edit/<plugin_name>')
 @login_required
+@role_required('admin')
 def edit(plugin_name: str):
     if not _safe_plugin_name(plugin_name):
         flash(_('Invalid plugin name.'), 'danger')
@@ -464,9 +453,10 @@ def edit(plugin_name: str):
     current_file = None
 
     if cfg_file:
-        # Sanitize: resolve within plugin dir only
-        safe = os.path.normpath(os.path.join(path, cfg_file))
-        if not safe.startswith(os.path.realpath(path)):
+        # Sanitize: resolve within plugin dir only (symlinks resolved,
+        # sibling directories sharing a name prefix rejected).
+        safe = os.path.join(path, cfg_file)
+        if not is_within_directory(path, safe):
             flash(_('Invalid file path.'), 'danger')
             return redirect(url_for('plugins.edit', plugin_name=plugin_name))
         if os.path.isfile(safe):
@@ -495,6 +485,7 @@ def edit(plugin_name: str):
 
 @plugins_bp.route('/edit/<plugin_name>/save', methods=['POST'])
 @login_required
+@role_required('admin')
 def save_config(plugin_name: str):
     if not _safe_plugin_name(plugin_name):
         return jsonify(ok=False, msg='Geçersiz eklenti adı'), 400
@@ -509,13 +500,15 @@ def save_config(plugin_name: str):
     if path is None:
         return jsonify(ok=False, msg='Eklenti bulunamadı'), 404
 
-    safe = os.path.normpath(os.path.join(path, cfg_file))
-    if not os.path.realpath(safe).startswith(os.path.realpath(path)):
+    safe = os.path.join(path, cfg_file)
+    if not is_within_directory(path, safe) or not os.path.isfile(safe):
         return jsonify(ok=False, msg='Güvenlik hatası'), 403
 
     try:
-        with open(safe, 'w', encoding='utf-8') as fh:
+        with open(os.path.realpath(safe), 'w', encoding='utf-8') as fh:
             fh.write(content)
+        log_action(current_app.config['DATABASE'], current_user.username,
+                   'Plugin Config Saved', f'{plugin_name}/{cfg_file}')
         return jsonify(ok=True, msg='Kaydedildi')
     except Exception as e:
         return jsonify(ok=False, msg=str(e)), 500

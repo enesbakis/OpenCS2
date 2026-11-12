@@ -75,6 +75,7 @@
                 <span style="font-size:0.72rem; font-weight:600; color:#92400e; background:#fde68a; padding:0.2rem 0.6rem; border-radius:12px;">{{ _('NOT PATCHED') }}</span>
                 {% if installed and gameinfo_exists %}
                 <form method="POST" action="{{ url_for('metamod.patch') }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                   <button type="submit" class="btn-action warning" style="font-size:0.75rem;">
                     <i class="fa-solid fa-wrench"></i> {{ _('Patch') }}
                   </button>
@@ -178,6 +179,7 @@
             <i class="fa-solid fa-file-pen" style="color:#ca8a04;"></i> Sadece gameinfo.gi Yamala
           </div>
           <form method="POST" action="{{ url_for('metamod.patch') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="btn-action warning w-100" style="justify-content:center; padding:0.6rem;">
               <i class="fa-solid fa-wrench"></i> {{ _('Patch gameinfo.gi') }}
             </button>

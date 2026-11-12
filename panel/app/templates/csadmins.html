@@ -45,6 +45,7 @@
               {% set confirm_del = _('Delete %(name)s?', name=name) %}
               <form method="POST" action="{{ url_for('csadmins.delete', admin_name=name) }}"
                     onsubmit="return confirm('{{ confirm_del }}')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <button type="submit" class="btn-action ban" title="{{ _('Delete') }}">
                   <i class="fa-solid fa-trash"></i>
                 </button>
@@ -95,6 +96,7 @@
               {% set confirm_grp = _('Delete group %(name)s?', name=gname) %}
               <form method="POST" action="{{ url_for('csadmins.delete_group', group_name=gname) }}"
                     onsubmit="return confirm('{{ confirm_grp }}')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <button type="submit" class="btn-action ban" title="{{ _('Delete') }}">
                   <i class="fa-solid fa-trash"></i>
                 </button>
@@ -123,6 +125,7 @@
       </div>
       <div class="card-body-custom">
         <form method="POST" action="{{ url_for('csadmins.add') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
           <label class="form-label-custom">{{ _('Display Name') }}</label>
           <input type="text" name="name" class="form-control mb-3" required
@@ -179,6 +182,7 @@
       </div>
       <div class="card-body-custom">
         <form method="POST" action="{{ url_for('csadmins.add_group') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
           <label class="form-label-custom">{{ _('Group Name') }}</label>
           <div class="input-group mb-3" style="font-size:0.85rem;">

@@ -3,6 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script>
+    // Attach the CSRF token to every same-origin state-changing fetch().
+    (function () {
+      const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      const origFetch = window.fetch.bind(window);
+      window.fetch = function (input, init) {
+        init = init || {};
+        const method = (init.method || (input instanceof Request ? input.method : 'GET')).toUpperCase();
+        const url = new URL(input instanceof Request ? input.url : input, window.location.href);
+        if (!['GET', 'HEAD', 'OPTIONS'].includes(method) && url.origin === window.location.origin) {
+          const headers = new Headers(init.headers || (input instanceof Request ? input.headers : undefined));
+          headers.set('X-CSRFToken', token);
+          init.headers = headers;
+        }
+        return origFetch(input, init);
+      };
+    })();
+  </script>
   <title>{% block title %}CS2 Panel{% endblock %} — CS2 Panel</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -51,10 +70,12 @@
          class="sidebar-link {% if request.endpoint and request.endpoint.startswith('plugins.') %}active{% endif %}">
         <i class="fa-solid fa-puzzle-piece nav-icon"></i>{{ _('Plugins') }}
       </a>
+      {% if current_user.has_role('operator') %}
       <a href="{{ url_for('server.index') }}"
-         class="sidebar-link {% if request.endpoint == 'server.settings' %}active{% endif %}">
+         class="sidebar-link {% if request.endpoint == 'server.index' %}active{% endif %}">
         <i class="fa-solid fa-sliders nav-icon"></i>{{ _('Server Settings') }}
       </a>
+      {% endif %}
       <a href="{{ url_for('server.logs') }}"
          class="sidebar-link {% if request.endpoint == 'server.logs' %}active{% endif %}">
         <i class="fa-solid fa-terminal nav-icon"></i>{{ _('Logs') }}
@@ -69,21 +90,26 @@
          class="sidebar-link {% if request.endpoint and request.endpoint.startswith('users.') %}active{% endif %}">
         <i class="fa-solid fa-users nav-icon"></i>{{ _('Panel Users') }}
       </a>
+      {% if current_user.has_role('admin') %}
       <a href="{{ url_for('audit.index') }}"
          class="sidebar-link {% if request.endpoint and request.endpoint.startswith('audit.') %}active{% endif %}">
         <i class="fa-solid fa-clipboard-list nav-icon"></i>Audit Log
       </a>
+      {% endif %}
     </nav>
 
     <div class="sidebar-footer">
-      <a href="{{ url_for('auth.logout') }}" class="sidebar-user">
-        <div class="sidebar-avatar">{{ current_user.username[0]|upper }}</div>
-        <div>
-          <div class="sidebar-username">{{ current_user.username }}</div>
-          <div class="sidebar-role">{{ _('Logout') }}</div>
-        </div>
-        <i class="fa-solid fa-arrow-right-from-bracket ms-auto" style="color:#475569; font-size:0.75rem;"></i>
-      </a>
+      <form method="POST" action="{{ url_for('auth.logout') }}" style="margin:0;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="sidebar-user" style="width:100%; background:none; border:0; text-align:left; cursor:pointer;">
+          <div class="sidebar-avatar">{{ current_user.username[0]|upper }}</div>
+          <div>
+            <div class="sidebar-username">{{ current_user.username }}</div>
+            <div class="sidebar-role">{{ current_user.role }} · {{ _('Logout') }}</div>
+          </div>
+          <i class="fa-solid fa-arrow-right-from-bracket ms-auto" style="color:#475569; font-size:0.75rem;"></i>
+        </button>
+      </form>
     </div>
   </aside>
 
@@ -107,8 +133,8 @@
             {% if get_locale() == 'tr' %}🇹🇷 TR{% else %}🇬🇧 EN{% endif %}
           </button>
           <ul class="dropdown-menu dropdown-menu-end" style="min-width:8rem; font-size:0.82rem;">
-            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='en') }}?next={{ request.path }}">🇬🇧 English</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='tr') }}?next={{ request.path }}">🇹🇷 Türkçe</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='en', next=request.path) }}">🇬🇧 English</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='tr', next=request.path) }}">🇹🇷 Türkçe</a></li>
           </ul>
         </div>
         <button class="btn-action muted ms-1" id="darkToggle" title="{{ _('Theme') }}" style="padding:0.3rem 0.6rem; border-radius:8px;">
@@ -125,9 +151,11 @@
           <span>{{ _('Plugin change detected —') }} <strong>{{ _('Server restart required') }}</strong></span>
         </div>
         <div style="display:flex; gap:0.5rem;">
+          {% if current_user.has_role('admin') %}
           <button id="restartBtn" onclick="restartServer(this)" class="btn-action apply" style="padding:0.3rem 0.75rem; font-size:0.8rem;">
             <i class="fa-solid fa-power-off"></i> {{ _('Restart') }}
           </button>
+          {% endif %}
           <button onclick="dismissRestart()" class="btn-action muted" style="padding:0.3rem 0.75rem; font-size:0.8rem;">
             <i class="fa-solid fa-check"></i> {{ _('Done, restarted') }}
           </button>

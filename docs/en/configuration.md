@@ -6,11 +6,27 @@ All configuration is done through environment variables, typically in a `.env` f
 
 | Variable | Default | Required | Description |
 |---|---|---|---|
-| `SECRET_KEY` | `dev-secret-key-change-in-prod` | **Yes** | Flask session signing key. Use a long random string. |
+| `SECRET_KEY` | *(none)* | **Yes** | Flask session signing key. The app refuses to start if it is missing, shorter than 16 characters, or a known placeholder (such as `changeme`). See [Generating a secure SECRET_KEY](#generating-a-secure-secret_key). |
 | `DATABASE` | `/app/data/panel.db` | No | Path to the SQLite database file inside the container. |
 | `PANEL_ADMIN_USER` | `admin` | No | Username for the initial admin account (created on first start). |
-| `PANEL_ADMIN_PASS` | `changeme` | No | Password for the initial admin account. |
+| `PANEL_ADMIN_PASS` | *(generated)* | No | Password for the initial admin account. If empty, a random password is generated on the first start and written to the container log once: `docker compose logs panel \| grep "generated password"`. It is only used while the user database is empty; changing this variable later does not change the existing password. |
 | `PANEL_PORT` | `5000` | No | Host port the panel listens on (docker-compose only). |
+| `SESSION_COOKIE_SECURE` | `false` | No | Marks session cookies as `Secure`. Set to `true` when the panel is served over HTTPS (behind a reverse proxy). |
+| `MAX_UPLOAD_MB` | `1024` | No | Maximum size of a single file upload, in MB. Larger uploads are rejected. |
+
+## Roles
+
+Panel users have one of three roles. New users default to `viewer`.
+
+| Role | Can do |
+|---|---|
+| `viewer` | Read-only: dashboard, map and plugin lists, logs |
+| `operator` | Everything `viewer` can, plus map changes, player kick / ban / slay, server password, server name, game mode, max players, mapcycle |
+| `admin` | Everything, including RCON console, restart, file uploads, plugin / Metamod / CounterStrikeSharp install and config editing, `server.cfg`, CS2 admin management, panel users, audit log |
+
+The last remaining admin cannot be deleted or demoted. See the README for the full picture.
+
+## Generating a secure SECRET_KEY
 
 ## RCON Settings
 

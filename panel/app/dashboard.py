@@ -12,6 +12,7 @@ from flask_login import login_required, current_user
 from flask_babel import _
 
 from .models import get_state, set_state, log_action
+from .security import role_required
 from .rcon_client import rcon_execute, parse_status, get_cvar, RCONError
 
 _DEFAULT_QUICK_MAPS = [
@@ -80,6 +81,7 @@ def _clear_online(db: str) -> None:
 
 @dashboard_bp.route('/')
 @login_required
+@role_required('viewer')
 def index():
     cfg = current_app.config
     db = cfg['DATABASE']
@@ -139,6 +141,10 @@ def index():
         server['error'] = str(exc)
         _clear_online(db)
 
+    # The join password is only shown to users who are allowed to change it.
+    if not current_user.has_role('operator'):
+        server['sv_password'] = ''
+
     return render_template(
         'dashboard.html',
         server=server,
@@ -151,10 +157,12 @@ def index():
 
 @dashboard_bp.route('/set_password', methods=['POST'])
 @login_required
+@role_required('operator')
 def set_password():
     pw = request.form.get('password', '').strip()
-    # Block shell-injection characters
-    if pw and re.search(r'[;|&`$<>]', pw):
+    # Block characters that could break out of the quoted cvar value or chain
+    # extra console commands (quotes, separators, newlines, control chars).
+    if pw and (len(pw) > 64 or re.search(r'[;|&`$<>"\\\x00-\x1f\x7f]', pw)):
         flash(_('Invalid character in password.'), 'danger')
         return redirect(url_for('dashboard.index'))
     try:
@@ -169,6 +177,7 @@ def set_password():
 
 @dashboard_bp.route('/change_map', methods=['POST'])
 @login_required
+@role_required('operator')
 def change_map():
     map_name = request.form.get('map_name', '').strip()
     if not map_name or not re.match(r'^[a-zA-Z0-9_\-]+$', map_name):
@@ -186,16 +195,18 @@ def change_map():
 
 @dashboard_bp.route('/player_action', methods=['POST'])
 @login_required
+@role_required('operator')
 def player_action():
     action = request.form.get('action', '')
     userid = request.form.get('userid', '').strip()
-    reason = re.sub(r'["\';\\]', '', request.form.get('reason', 'Panel'))[:64]
+    reason = re.sub(r'["\';\\\x00-\x1f\x7f]', '', request.form.get('reason', 'Panel'))[:64]
     duration = request.form.get('duration', '60').strip()
 
-    if not userid.isdigit():
+    # re.fullmatch with an ASCII class: str.isdigit() also accepts e.g. '²'.
+    if not re.fullmatch(r'[0-9]{1,10}', userid):
         flash(_('Invalid player ID.'), 'danger')
         return redirect(url_for('dashboard.index'))
-    if not duration.isdigit():
+    if not re.fullmatch(r'[0-9]{1,6}', duration):
         duration = '60'
 
     try:
@@ -211,25 +222,19 @@ def player_action():
             flash(_('Player slayed.'), 'success')
         else:
             flash(_('Unknown action.'), 'danger')
+            return redirect(url_for('dashboard.index'))
+        playername = request.form.get('playername', '')[:64]
+        log_action(current_app.config['DATABASE'], current_user.username,
+                   f'Player {action.capitalize()}', f'{playername} (#{userid})')
     except RCONError as exc:
         flash(_('RCON error: %(e)s', e=exc), 'danger')
 
     return redirect(url_for('dashboard.index'))
 
 
-@dashboard_bp.route('/api/debug_rcon')
-@login_required
-def api_debug_rcon():
-    """Geçici debug: raw RCON status çıktısını döner."""
-    try:
-        raw = _rcon('status')
-        return {'raw': raw, 'lines': raw.splitlines()}, 200
-    except Exception as exc:
-        return {'error': str(exc)}, 500
-
-
 @dashboard_bp.route('/api/status')
 @login_required
+@role_required('viewer')
 def api_status():
     """AJAX — live status for the dashboard auto-refresh."""
     cfg = current_app.config
@@ -259,6 +264,7 @@ def api_status():
 
 @dashboard_bp.route('/api/metrics')
 @login_required
+@role_required('viewer')
 def api_metrics():
     """Sunucu kaynak kullanımı: CPU, RAM, Disk."""
     cpu = psutil.cpu_percent(interval=0.3)
@@ -300,6 +306,7 @@ def api_metrics():
 
 @dashboard_bp.route('/api/console')
 @login_required
+@role_required('viewer')
 def api_console():
     """Son N satır CS2 log çıktısı."""
     logs_dir = os.path.join(
@@ -333,6 +340,7 @@ def api_console():
 
 @dashboard_bp.route('/api/rcon', methods=['POST'])
 @login_required
+@role_required('admin')
 def api_rcon():
     """AJAX RCON terminal — kullanıcıdan gelen komutu CS2'ye iletir."""
     data = request.get_json(silent=True) or {}
@@ -341,6 +349,7 @@ def api_rcon():
         return jsonify({'error': 'Komut boş'}), 400
     if len(cmd) > 256:
         return jsonify({'error': 'Komut çok uzun (maks 256 karakter)'}), 400
+    log_action(current_app.config['DATABASE'], current_user.username, 'RCON Command', cmd)
     try:
         output = _rcon(cmd)
         return jsonify({'output': output or '(Yanıt yok)'})
@@ -350,10 +359,12 @@ def api_rcon():
 
 @dashboard_bp.route('/api/restart_server', methods=['POST'])
 @login_required
+@role_required('admin')
 def api_restart_server():
     """Sunucuya RCON quit gönder — Docker restart policy yeniden başlatır."""
     try:
         _rcon('quit')
+        log_action(current_app.config['DATABASE'], current_user.username, 'Server Restart', '')
         return jsonify({'ok': True})
     except RCONError as exc:
         return jsonify({'error': str(exc)}), 502

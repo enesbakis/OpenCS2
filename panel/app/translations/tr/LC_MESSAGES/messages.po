@@ -1116,3 +1116,55 @@ msgstr "Yeni Şifre"
 msgid "Change"
 msgstr "Değiştir"
 
+
+#, python-format
+msgid "At least %(n)s characters"
+msgstr "En az %(n)s karakter"
+
+msgid "Current Password"
+msgstr "Mevcut Şifre"
+
+msgid "Current password is incorrect."
+msgstr "Mevcut şifre yanlış."
+
+msgid "Invalid character in server name."
+msgstr "Sunucu adında geçersiz karakter."
+
+msgid "Invalid role."
+msgstr "Geçersiz rol."
+
+#, python-format
+msgid "New password must be at least %(n)s characters."
+msgstr "Yeni şifre en az %(n)s karakter olmalıdır."
+
+#, python-format
+msgid "Password must be at least %(n)s characters."
+msgstr "Şifre en az %(n)s karakter olmalıdır."
+
+msgid "Role"
+msgstr "Rol"
+
+msgid "Role updated."
+msgstr "Rol güncellendi."
+
+#, python-format
+msgid "Upload too large (max %(mb)s MB)."
+msgstr "Yükleme çok büyük (en fazla %(mb)s MB)."
+
+msgid "viewer: read-only · operator: map, players, server settings · admin: everything"
+msgstr "viewer: salt okunur · operator: harita, oyuncular, sunucu ayarları · admin: her şey"
+
+msgid "You cannot delete the last admin."
+msgstr "Son admin silinemez."
+
+msgid "You cannot remove the admin role from the last admin."
+msgstr "Son adminin admin rolü kaldırılamaz."
+
+msgid "You do not have permission to do that."
+msgstr "Bu işlem için yetkiniz yok."
+
+msgid "You do not have permission to view this panel."
+msgstr "Bu paneli görüntüleme yetkiniz yok."
+
+msgid "Your session form has expired. Please try again."
+msgstr "Form oturumunuzun süresi doldu. Lütfen tekrar deneyin."

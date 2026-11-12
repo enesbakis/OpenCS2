@@ -42,7 +42,17 @@ Wait ~60 seconds for CS2 to finish loading, then open:
 http://YOUR_SERVER_IP:5000
 ```
 
-Default credentials: **admin / changeme** — change immediately.
+Log in as **admin**. The password comes from `PANEL_ADMIN_PASS`. If that is empty, a random password is generated on the first start and written to the panel log **once**:
+
+```bash
+docker compose logs panel | grep "generated password"
+```
+
+Change it right after your first login.
+
+## Roles
+
+New users get the `viewer` role (read-only) by default. `operator` adds map and player management and server settings, and `admin` has full access, including the RCON console, uploads, plugin installs and panel users. See [Configuration Reference](configuration.md#roles) for the full table.
 
 ## 4. Verify health
 

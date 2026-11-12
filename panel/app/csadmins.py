@@ -7,10 +7,16 @@ from flask import (
     Blueprint, render_template, redirect, url_for,
     flash, current_app, request,
 )
-from flask_login import login_required
+from flask_login import login_required, current_user
 from flask_babel import _
+from .models import log_action
+from .security import role_required
 
 logger = logging.getLogger(__name__)
+
+
+def _audit(action: str, detail: str) -> None:
+    log_action(current_app.config['DATABASE'], current_user.username, action, detail)
 
 
 def _rcon_reload_admins() -> None:
@@ -100,6 +106,7 @@ def _safe_name(name: str) -> bool:
 
 @csadmins_bp.route('/')
 @login_required
+@role_required('viewer')
 def index():
     admins = _load_json(_admins_path())
     groups = _load_json(_groups_path())
@@ -114,6 +121,7 @@ def index():
 
 @csadmins_bp.route('/add', methods=['POST'])
 @login_required
+@role_required('admin')
 def add():
     name = request.form.get('name', '').strip()
     identity = request.form.get('identity', '').strip()
@@ -155,6 +163,7 @@ def add():
 
     admins[name] = entry
     _save_json(_admins_path(), admins)
+    _audit('CS Admin Added', name)
     _rcon_reload_admins()
     flash(_('Admin "%(n)s" added.', n=name), 'success')
     return redirect(url_for('csadmins.index'))
@@ -162,6 +171,7 @@ def add():
 
 @csadmins_bp.route('/edit/<path:admin_name>', methods=['GET', 'POST'])
 @login_required
+@role_required('admin')
 def edit(admin_name: str):
     admins = _load_json(_admins_path())
     groups = _load_json(_groups_path())
@@ -213,6 +223,7 @@ def edit(admin_name: str):
         admins[new_name] = entry
 
         _save_json(_admins_path(), admins)
+        _audit('CS Admin Edited', admin_name if new_name == admin_name else f'{admin_name} -> {new_name}')
         _rcon_reload_admins()
         flash(_('"%(n)s" updated.', n=new_name), 'success')
         return redirect(url_for('csadmins.index'))
@@ -230,6 +241,7 @@ def edit(admin_name: str):
 
 @csadmins_bp.route('/delete/<path:admin_name>', methods=['POST'])
 @login_required
+@role_required('admin')
 def delete(admin_name: str):
     admins = _load_json(_admins_path())
 
@@ -239,6 +251,7 @@ def delete(admin_name: str):
 
     del admins[admin_name]
     _save_json(_admins_path(), admins)
+    _audit('CS Admin Deleted', admin_name)
     _rcon_reload_admins()
     flash(_('"%(n)s" deleted.', n=admin_name), 'success')
     return redirect(url_for('csadmins.index'))
@@ -248,6 +261,7 @@ def delete(admin_name: str):
 
 @csadmins_bp.route('/groups/add', methods=['POST'])
 @login_required
+@role_required('admin')
 def add_group():
     name = request.form.get('group_name', '').strip()
     immunity = request.form.get('group_immunity', '0').strip()
@@ -280,6 +294,7 @@ def add_group():
 
     groups[name] = entry
     _save_json(_groups_path(), groups)
+    _audit('CS Admin Group Added', name)
     _rcon_reload_admins()
     flash(_('Group "%(n)s" created.', n=name), 'success')
     return redirect(url_for('csadmins.index'))
@@ -287,6 +302,7 @@ def add_group():
 
 @csadmins_bp.route('/groups/delete/<path:group_name>', methods=['POST'])
 @login_required
+@role_required('admin')
 def delete_group(group_name: str):
     groups = _load_json(_groups_path())
     if group_name not in groups:
@@ -295,6 +311,7 @@ def delete_group(group_name: str):
 
     del groups[group_name]
     _save_json(_groups_path(), groups)
+    _audit('CS Admin Group Deleted', group_name)
     _rcon_reload_admins()
     flash(_('Group "%(n)s" deleted.', n=group_name), 'success')
     return redirect(url_for('csadmins.index'))

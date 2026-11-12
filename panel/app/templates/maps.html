@@ -59,6 +59,7 @@
                 </td>
                 <td>
                   <form method="POST" action="{{ url_for('maps.toggle_mapcycle') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="map_name" value="{{ m }}">
                     {% if m in mapcycle %}
                       <button type="submit" class="btn-action green">
@@ -73,6 +74,7 @@
                 </td>
                 <td>
                   <form method="POST" action="{{ url_for('maps.toggle_quickmap') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="map_name" value="{{ m }}">
                     {% if m in quick_maps %}
                       <button type="submit" class="btn-action apply" style="padding:0.25rem 0.6rem; font-size:0.75rem;">
@@ -90,6 +92,7 @@
                   {% set confirm_msg = _('Delete %(m)s?', m=m) %}
                   <form method="POST" action="{{ url_for('maps.delete_map', map_name=m) }}"
                         onsubmit="return confirm('{{ confirm_msg }}')">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn-action ban">
                       <i class="fa-solid fa-trash"></i> {{ _('Delete') }}
                     </button>
@@ -130,6 +133,7 @@
       </div>
       <div class="card-body-custom">
         <form method="POST" action="{{ url_for('maps.upload') }}" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <label class="form-label-custom">{{ _('Select File') }}</label>
           <input type="file" name="map_file" class="form-control mb-3" accept=".bsp,.vpk,.zip" required>
           <button type="submit" class="btn-action apply w-100" style="justify-content:center; padding:0.5rem;">

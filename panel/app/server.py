@@ -1,4 +1,5 @@
 import os
+import re
 
 from flask import (
     Blueprint, render_template, request,
@@ -8,6 +9,7 @@ from flask_login import login_required, current_user
 from flask_babel import _
 from .rcon_client import rcon_execute, RCONError
 from .models import get_state, set_state, log_action
+from .security import role_required
 
 server_bp = Blueprint('server', __name__, url_prefix='/server')
 
@@ -38,6 +40,7 @@ def _logs_dir() -> str:
 
 @server_bp.route('/')
 @login_required
+@role_required('operator')
 def index():
     cfg = current_app.config
     db = cfg['DATABASE']
@@ -86,10 +89,16 @@ def index():
 
 @server_bp.route('/set_hostname', methods=['POST'])
 @login_required
+@role_required('operator')
 def set_hostname():
     name = request.form.get('hostname', '').strip()
     if not name or len(name) > 128:
         flash(_('Invalid server name (1-128 characters).'), 'danger')
+        return redirect(url_for('server.index'))
+    # Quotes, ';' and control characters would let the value escape the quoted
+    # cvar and chain arbitrary console commands (e.g. change rcon_password).
+    if re.search(r'["\\;\x00-\x1f\x7f]', name):
+        flash(_('Invalid character in server name.'), 'danger')
         return redirect(url_for('server.index'))
     db = current_app.config['DATABASE']
     try:
@@ -104,6 +113,7 @@ def set_hostname():
 
 @server_bp.route('/set_max_players', methods=['POST'])
 @login_required
+@role_required('operator')
 def set_max_players():
     val = request.form.get('max_players', '').strip()
     if not val.isdigit() or int(val) < 1 or int(val) > 64:
@@ -118,6 +128,7 @@ def set_max_players():
 
 @server_bp.route('/save_cfg', methods=['POST'])
 @login_required
+@role_required('admin')
 def save_cfg():
     content = request.form.get('cfg_content', '')
     cfg_path = _cfg_path()
@@ -138,6 +149,7 @@ def save_cfg():
 
 @server_bp.route('/set_gamemode', methods=['POST'])
 @login_required
+@role_required('operator')
 def set_gamemode():
     key = request.form.get('gamemode', '')
     if key not in GAME_MODES:
@@ -158,6 +170,7 @@ def set_gamemode():
 
 @server_bp.route('/logs')
 @login_required
+@role_required('viewer')
 def logs():
     logs_dir = _logs_dir()
     log_files = []
