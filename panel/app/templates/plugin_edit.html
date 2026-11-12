@@ -157,6 +157,7 @@
           {{ _('Disabled plugins stay installed but are not loaded by CS2.') }}
         </p>
         <form method="POST" action="{{ url_for('plugins.toggle', plugin_name=plugin.name) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           {% if plugin.enabled %}
           <button type="submit" class="btn-action warning w-100" style="justify-content:center; padding:0.5rem;">
             <i class="fa-solid fa-toggle-on"></i> {{ _('Disable') }}
@@ -182,6 +183,7 @@
         {% set confirm_del = _('Delete %(name)s and all its files?', name=plugin.name) %}
         <form method="POST" action="{{ url_for('plugins.delete', plugin_name=plugin.name) }}"
               onsubmit="return confirm('{{ confirm_del }}')">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <button type="submit" class="btn-action ban w-100" style="justify-content:center; padding:0.5rem;">
             <i class="fa-solid fa-trash"></i> {{ _('Delete Plugin') }}
           </button>

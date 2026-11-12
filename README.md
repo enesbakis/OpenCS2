@@ -78,7 +78,13 @@ docker compose up -d
 ```
 
 The panel will be available at **http://YOUR_SERVER_IP:5000**.  
-Default credentials: `admin` / `changeme` — **change these immediately** via the Users page.
+Log in as `admin` (or `PANEL_ADMIN_USER`). The admin password is taken from `PANEL_ADMIN_PASS`. If that is empty, a random password is generated on the first start and written to the panel log **once**:
+
+```bash
+docker compose logs panel | grep "generated password"
+```
+
+Change the password right after your first login, via the Users page.
 
 ### 3. Update
 
@@ -97,7 +103,7 @@ All settings are passed as environment variables (via `.env`).
 
 | Variable | Default | Description |
 |---|---|---|
-| `SECRET_KEY` | *(required)* | Flask session secret — use a long random string |
+| `SECRET_KEY` | *(required)* | Flask session secret. The app refuses to start with a missing or placeholder key. Generate with `openssl rand -hex 32` |
 | `RCON_PASSWORD` | *(required)* | Must match CS2 `rcon_password` cvar |
 | `SERVER_IP` | `127.0.0.1` | Public IP shown in the panel |
 | `RCON_HOST` | `cs2` | Hostname / IP of the CS2 container |
@@ -106,10 +112,22 @@ All settings are passed as environment variables (via `.env`).
 | `CS2_MAXPLAYERS` | `0` | Max players (display only) |
 | `CS2_DATA_PATH` | `/cs2-data` | Path to CS2 game data volume |
 | `PANEL_ADMIN_USER` | `admin` | Initial admin username |
-| `PANEL_ADMIN_PASS` | `changeme` | Initial admin password |
+| `PANEL_ADMIN_PASS` | *(generated)* | Initial admin password. If empty, a random one is generated and written to the log once. Only used when no users exist yet |
 | `DATABASE` | `/app/data/panel.db` | SQLite database path |
+| `SESSION_COOKIE_SECURE` | `false` | Set to `true` when the panel is served over HTTPS (behind a reverse proxy) |
+| `MAX_UPLOAD_MB` | `1024` | Maximum size of a single file upload, in MB |
 
 See [`.env.example`](.env.example) for a full list including CS2 server options.
+
+## Roles
+
+| Role | Can do |
+|---|---|
+| `viewer` | Read-only: dashboard, map and plugin lists, logs |
+| `operator` | Everything `viewer` can, plus: change map, kick / ban / slay players, server password and name, game mode, max players, mapcycle |
+| `admin` | Everything: RCON console, server restart, file uploads, plugin / Metamod / CounterStrikeSharp install and config editing, `server.cfg`, CS2 admin management, panel users, audit log |
+
+New users default to `viewer`. The last remaining admin cannot be deleted or demoted. Users that existed before an upgrade keep their admin role.
 
 ---
 

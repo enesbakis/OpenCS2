@@ -41,7 +41,17 @@ CS2 sunucusunun yüklenmesi ~60 saniye sürer. Ardından paneli açın:
 http://SUNUCU_IP:5000
 ```
 
-Varsayılan giriş: **admin / changeme** — hemen değiştirin.
+`admin` kullanıcısıyla giriş yapın. Şifre `PANEL_ADMIN_PASS` değişkeninden alınır. Bu boşsa, ilk açılışta rastgele bir şifre üretilir ve panel loguna **bir kez** yazılır:
+
+```bash
+docker compose logs panel | grep "generated password"
+```
+
+İlk girişten hemen sonra şifreyi değiştirin.
+
+## Roller
+
+Yeni kullanıcılar varsayılan olarak `viewer` (salt okunur) rolünü alır. `operator` harita ve oyuncu yönetimi ile sunucu ayarlarını ekler; `admin` konsol (RCON), dosya yüklemeleri, eklenti kurulumu ve panel kullanıcıları dahil tam yetkiye sahiptir. Tam tablo için [Configuration Reference (İngilizce)](../en/configuration.md#roles) bölümüne bakın.
 
 ## 4. Sağlık kontrolü
 

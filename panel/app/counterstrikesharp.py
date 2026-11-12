@@ -8,6 +8,7 @@ import zipfile
 from flask import Blueprint, render_template, current_app, request, jsonify
 from flask_login import login_required
 from werkzeug.utils import secure_filename
+from .security import role_required
 
 css_bp = Blueprint('css', __name__, url_prefix='/counterstrikesharp')
 
@@ -124,6 +125,7 @@ def _do_install() -> tuple[bool, str]:
 
 @css_bp.route('/')
 @login_required
+@role_required('viewer')
 def index():
     return render_template(
         'counterstrikesharp.html',
@@ -136,6 +138,7 @@ def index():
 
 @css_bp.route('/api/latest')
 @login_required
+@role_required('viewer')
 def api_latest():
     url, tag, err = _get_latest_release()
     return jsonify({'url': url, 'tag': tag, 'error': err})
@@ -143,6 +146,7 @@ def api_latest():
 
 @css_bp.route('/install_upload', methods=['POST'])
 @login_required
+@role_required('admin')
 def install_upload():
     """Browser-fetch indirip gönderilen .zip'i kurar. JSON döner."""
     f = request.files.get('file')

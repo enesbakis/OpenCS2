@@ -67,6 +67,7 @@
 
               <!-- Toggle Aktif/Deaktif -->
               <form method="POST" action="{{ url_for('plugins.toggle', plugin_name=p.name) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 {% if p.enabled %}
                 <button type="submit" class="btn-action warning" title="{{ _('Disable') }}">
                   <i class="fa-solid fa-toggle-on"></i>
@@ -81,6 +82,7 @@
               {% set confirm_del = _('Delete %(p)s? This action cannot be undone.', p=p.name) %}
               <form method="POST" action="{{ url_for('plugins.delete', plugin_name=p.name) }}"
                     onsubmit="return confirm('{{ confirm_del }}')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <button type="submit" class="btn-action ban" title="Sil">
                   <i class="fa-solid fa-trash"></i>
                 </button>
@@ -109,6 +111,7 @@
       </div>
       <div class="card-body-custom">
         <form method="POST" action="{{ url_for('plugins.upload') }}" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
           <label class="form-label-custom">{{ _('Plugin Name') }} <span style="color:#94a3b8; font-weight:400;">({{ _('optional') }})</span></label>
           <input type="text" name="plugin_name" class="form-control mb-3"

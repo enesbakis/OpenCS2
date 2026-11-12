@@ -14,6 +14,7 @@
       </div>
       <div class="card-body-custom">
         <form method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
           <label class="form-label-custom">{{ _('Display Name') }}</label>
           <input type="text" name="name" class="form-control mb-3" required

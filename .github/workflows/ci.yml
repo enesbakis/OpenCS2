@@ -18,10 +18,11 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: panel/requirements.txt
+          cache-dependency-path: panel/requirements*.txt
 
       - name: Install dependencies
-        run: pip install flake8 -r panel/requirements.txt
+        working-directory: panel
+        run: pip install -r requirements-dev.txt
 
       - name: Run flake8
         run: flake8 panel/ --max-line-length=120 --exclude=panel/app/translations
@@ -57,3 +58,24 @@ jobs:
       - name: Test app import and factory
         working-directory: panel
         run: python -c "from app import create_app; app = create_app(); print('OK')"
+
+  test:
+    name: Tests (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: panel/requirements*.txt
+
+      - name: Install dependencies
+        working-directory: panel
+        run: pip install -r requirements-dev.txt
+
+      - name: Run tests
+        working-directory: panel
+        run: python -m pytest -q

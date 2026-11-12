@@ -10,6 +10,7 @@ from flask_babel import _
 from werkzeug.utils import secure_filename
 
 from .models import log_action
+from .security import role_required
 
 metamod_bp = Blueprint('metamod', __name__, url_prefix='/metamod')
 
@@ -115,9 +116,11 @@ def _extract_tarball(tmp_path: str, build_name: str) -> tuple[bool, str]:
                 norm = os.path.normpath(m.name)
                 if norm.startswith('..') or os.path.isabs(norm):
                     continue
-                if norm.startswith('addons') or norm == 'addons':
+                if norm.split(os.sep)[0] == 'addons':
                     safe_members.append(m)
-            tar.extractall(path=csgo, members=safe_members)
+            # filter='data' rejects absolute paths, '..', links that point
+            # outside the destination, device files and unsafe permissions.
+            tar.extractall(path=csgo, members=safe_members, filter='data')
     except Exception as e:
         return False, f'Çıkarma hatası: {e}'
 
@@ -152,6 +155,7 @@ def _do_install() -> tuple[bool, str]:
 
 @metamod_bp.route('/')
 @login_required
+@role_required('viewer')
 def index():
     installed = _is_installed()
     patched = _gameinfo_patched()
@@ -170,6 +174,7 @@ def index():
 
 @metamod_bp.route('/api/latest')
 @login_required
+@role_required('viewer')
 def api_latest():
     url, build, err = _get_latest_url()
     return {'url': url, 'build': build, 'error': err}
@@ -177,6 +182,7 @@ def api_latest():
 
 @metamod_bp.route('/install', methods=['POST'])
 @login_required
+@role_required('admin')
 def install():
     ok, msg = _do_install()
     if not ok:
@@ -196,6 +202,7 @@ def install():
 
 @metamod_bp.route('/patch', methods=['POST'])
 @login_required
+@role_required('admin')
 def patch():
     ok, msg = _patch_gameinfo()
     flash(msg, 'success' if ok else 'danger')
@@ -207,6 +214,7 @@ def patch():
 
 @metamod_bp.route('/install_upload', methods=['POST'])
 @login_required
+@role_required('admin')
 def install_upload():
     """
     Accept a tar.gz uploaded from the browser (client-side fetch bypass).
