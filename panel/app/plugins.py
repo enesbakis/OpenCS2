@@ -156,23 +156,48 @@ def _fix_permissions(path: str) -> None:
                 pass
 
 
+def _archive_members_tar(tar: tarfile.TarFile, dest: str):
+    """Yield the tar members that can be extracted into ``dest`` safely.
+
+    The name check alone is not enough: a symlink or hard link member passes it
+    and is created by ``TarFile.extract``, and every later member whose path
+    goes through that link then writes wherever the link points.
+    """
+    root = os.path.realpath(dest)
+    for member in tar.getmembers():
+        if member.issym() or member.islnk() or member.isdev():
+            continue
+        norm = os.path.normpath(member.name)
+        if norm.startswith('..') or os.path.isabs(norm):
+            continue
+        if os.path.commonpath([root, os.path.realpath(os.path.join(root, norm))]) != root:
+            continue
+        yield member
+
+
+def _safe_zip_members(zf: zipfile.ZipFile, dest: str):
+    """Yield the zip members whose names stay inside ``dest``."""
+    root = os.path.realpath(dest)
+    for name in zf.namelist():
+        norm = os.path.normpath(name)
+        if norm.startswith('..') or os.path.isabs(norm):
+            continue
+        if os.path.commonpath([root, os.path.realpath(os.path.join(root, norm))]) != root:
+            continue
+        yield name
+
+
 def _extract_to_tmp(src: str) -> tuple[str | None, str]:
     """Extract archive into a fresh temp directory. Returns (tmp_dir, error)."""
     tmp_dir = tempfile.mkdtemp()
     try:
         if src.endswith('.tar.gz') or src.endswith('.tgz'):
             with tarfile.open(src, 'r:gz') as tar:
-                for m in tar.getmembers():
-                    norm = os.path.normpath(m.name)
-                    if norm.startswith('..') or os.path.isabs(norm):
-                        continue
+                for m in _archive_members_tar(tar, tmp_dir):
                     tar.extract(m, path=tmp_dir)
         else:
             with zipfile.ZipFile(src) as zf:
-                for member in zf.namelist():
-                    norm = os.path.normpath(member)
-                    if norm.startswith('..') or os.path.isabs(norm):
-                        continue
+                for member in _safe_zip_members(zf, tmp_dir):
                     zf.extract(member, tmp_dir)
         return tmp_dir, ''
     except Exception as e:
@@ -234,17 +259,11 @@ def _extract_archive(src: str, dest_dir: str) -> tuple[bool, str]:
     try:
         if src.endswith('.tar.gz') or src.endswith('.tgz'):
             with tarfile.open(src, 'r:gz') as tar:
-                for m in tar.getmembers():
-                    norm = os.path.normpath(m.name)
-                    if norm.startswith('..') or os.path.isabs(norm):
-                        continue
+                for m in _archive_members_tar(tar, dest_dir):
                     tar.extract(m, path=dest_dir)
         else:
             with zipfile.ZipFile(src) as zf:
-                for member in zf.namelist():
-                    norm = os.path.normpath(member)
-                    if norm.startswith('..') or os.path.isabs(norm):
-                        continue
+                for member in _safe_zip_members(zf, dest_dir):
                     zf.extract(member, dest_dir)
         return True, ''
     except Exception as e:
